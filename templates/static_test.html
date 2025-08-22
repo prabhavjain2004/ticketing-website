@@ -1,0 +1,146 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Files Test - TapNex</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .logo-test {
+            text-align: center;
+            padding: 20px;
+        }
+        .logo-test img {
+            max-width: 200px;
+            height: auto;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>TapNex Static Files Test</h1>
+    
+    <div class="test-section">
+        <h2>Logo Loading Test</h2>
+        <div class="logo-test">
+            <h3>Main Logo</h3>
+            <img src="{% static 'images/logos/TAPNEX_LOGO_BG.jpg' %}" 
+                 alt="TapNex Logo" 
+                 onload="showStatus('logo-status', 'success', 'Logo loaded successfully!')"
+                 onerror="showStatus('logo-status', 'error', 'Logo failed to load from: ' + this.src)">
+            <div id="logo-status" class="status info">Loading logo...</div>
+        </div>
+        
+        <div class="logo-test">
+            <h3>Alternative Logo</h3>
+            <img src="{% static 'images/logos/LOGO_NEXGEN_FC.png' %}" 
+                 alt="NexGen FC Logo" 
+                 onload="showStatus('alt-logo-status', 'success', 'Alternative logo loaded successfully!')"
+                 onerror="showStatus('alt-logo-status', 'error', 'Alternative logo failed to load from: ' + this.src)">
+            <div id="alt-logo-status" class="status info">Loading alternative logo...</div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Static URL Information</h2>
+        <div class="status info">
+            <strong>STATIC_URL:</strong> {{ STATIC_URL|default:"Not set" }}<br>
+            <strong>Logo URL:</strong> {% static 'images/logos/TAPNEX_LOGO_BG.jpg' %}<br>
+            <strong>Current URL:</strong> <span id="current-url"></span><br>
+            <strong>User Agent:</strong> <span id="user-agent"></span>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Network Test</h2>
+        <button onclick="testStaticFile()">Test Static File Access</button>
+        <div id="network-status" class="status info">Click button to test</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Debug Information</h2>
+        <div id="debug-info" class="status info">
+            <strong>Page Load Time:</strong> <span id="load-time"></span><br>
+            <strong>Static Files Loaded:</strong> <span id="files-count">0</span><br>
+            <strong>Errors:</strong> <span id="error-count">0</span>
+        </div>
+    </div>
+
+    <script>
+        let errorCount = 0;
+        let filesCount = 0;
+        const startTime = performance.now();
+        
+        function showStatus(elementId, type, message) {
+            const element = document.getElementById(elementId);
+            element.className = 'status ' + type;
+            element.innerHTML = message;
+            
+            if (type === 'error') {
+                errorCount++;
+            } else if (type === 'success') {
+                filesCount++;
+            }
+            updateDebugInfo();
+        }
+        
+        function updateDebugInfo() {
+            document.getElementById('files-count').textContent = filesCount;
+            document.getElementById('error-count').textContent = errorCount;
+            document.getElementById('load-time').textContent = Math.round(performance.now() - startTime) + 'ms';
+        }
+        
+        function testStaticFile() {
+            const logoUrl = "{% static 'images/logos/TAPNEX_LOGO_BG.jpg' %}";
+            
+            fetch(logoUrl)
+                .then(response => {
+                    if (response.ok) {
+                        showStatus('network-status', 'success', 
+                            `Static file accessible! Status: ${response.status}, Size: ${response.headers.get('content-length')} bytes`);
+                    } else {
+                        showStatus('network-status', 'error', 
+                            `Static file not accessible! Status: ${response.status}`);
+                    }
+                })
+                .catch(error => {
+                    showStatus('network-status', 'error', 
+                        `Network error: ${error.message}`);
+                });
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('current-url').textContent = window.location.href;
+            document.getElementById('user-agent').textContent = navigator.userAgent;
+            updateDebugInfo();
+        });
+        
+        window.addEventListener('load', function() {
+            updateDebugInfo();
+        });
+    </script>
+</body>
+</html>

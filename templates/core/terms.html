@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Terms & Conditions - TapNex Ticketing System{% endblock %}
+
+{% block content %}
+<!-- Terms & Conditions Hero Section -->
+<div class="min-h-screen bg-gradient-to-br from-tapnex-blue via-tapnex-light to-tapnex-accent py-16">
+    <!-- Background Pattern Overlay -->
+    <div class="absolute inset-0 bg-black/10"></div>
+    <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"></div>
+    
+    <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <div class="flex items-center justify-center mb-6">
+                <div class="bg-white/20 backdrop-blur-sm p-4 rounded-2xl">
+                    <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm3 1h6v4H7V5zm6 6H7v2h6v-2z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+            </div>
+            <h1 class="text-4xl font-black text-white mb-4">Terms & Conditions</h1>
+            <p class="text-xl text-white/90 max-w-2xl mx-auto leading-relaxed">
+                Please read these terms and conditions carefully before using TapNex services
+            </p>
+        </div>
+
+        <!-- Terms Content Card -->
+        <div class="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-slide-up">
+            <div class="p-8">
+                <div class="prose max-w-none">
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-8">
+                        <div class="flex items-center">
+                            <svg class="w-6 h-6 text-blue-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                            </svg>
+                            <p class="text-blue-800 font-semibold mb-0">Effective Date: August 6, 2025</p>
+                        </div>
+                    </div>
+                    
+                    <section class="mb-8">
+                        <h2 class="text-2xl font-bold text-tapnex-blue mb-4 flex items-center">
+                            <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            1. Platform Details
+                        </h2>
+                        <p class="text-gray-700 mb-4 leading-relaxed">
+                            TapNex acts as a service provider for event organizers. It is not responsible for organizing events itself. TapNex provides a ticketing platform that connects event organizers with customers seeking event tickets.
+                        </p>
+                    </section>
+                    
+                    <section class="mb-8">
+                        <h2 class="text-2xl font-bold text-tapnex-blue mb-4 flex items-center">
+                            <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                            </svg>
+                            2. User Requirements
+                        </h2>
+                        <div class="space-y-4">
+                            <div class="bg-tapnex-gray rounded-lg p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">Age Requirement</h4>
+                                <p class="text-gray-700">Users must be at least 18 years old or have parental consent to use our services.</p>
+                            </div>
+                            <div class="bg-tapnex-gray rounded-lg p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">Account Information</h4>
+                                <p class="text-gray-700">Users must provide accurate and complete information during registration and keep their account information updated.</p>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section class="mb-8">
+                        <h2 class="text-2xl font-bold text-tapnex-blue mb-4 flex items-center">
+                            <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 11-2-4V7a2 2 0 00-2-2H5z"/>
+                            </svg>
+                            3. Ticketing and Access
+                        </h2>
+                        <ul class="space-y-3 text-gray-700">
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                Tickets are issued digitally via QR codes and email confirmation
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                Tickets are valid only for the specific event, date, and time purchased
+                            </li>
+                            <li class="flex items-start">
+                                <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                Entry may be denied for invalid tickets or failure to present required identification
+                            </li>
+                        </ul>
+                    </section>
+                    
+                    <section class="mb-8">
+                        <h2 class="text-2xl font-bold text-tapnex-blue mb-4 flex items-center">
+                            <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clip-rule="evenodd"/>
+                            </svg>
+                            4. Event Changes and Liability
+                        </h2>
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-6">
+                            <h4 class="font-semibold text-yellow-800 mb-3">Important Liability Information</h4>
+                            <ul class="space-y-2 text-yellow-700">
+                                <li>• TapNex is not responsible for event changes, cancellations, or postponements</li>
+                                <li>• Refunds are subject to the individual event organizer's policies</li>
+                                <li>• TapNex has limited liability and is not responsible for injuries at events</li>
+                                <li>• We are not liable for organizer non-performance or technical failures</li>
+                            </ul>
+                        </div>
+                    </section>
+                    
+                    <section class="mb-8">
+                        <h2 class="text-2xl font-bold text-tapnex-blue mb-4 flex items-center">
+                            <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"/>
+                            </svg>
+                            5. Payments and Prohibited Conduct
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-tapnex-gray rounded-lg p-4">
+                                <h4 class="font-semibold text-gray-900 mb-2">Payment Processing</h4>
+                                <p class="text-gray-700 text-sm">Payments are processed securely through third-party gateways. TapNex does not store payment information.</p>
+                            </div>
+                            <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                                <h4 class="font-semibold text-red-800 mb-2">Prohibited Activities</h4>
+                                <p class="text-red-700 text-sm">Tampering with tickets, unauthorized reselling, and fraudulent activities are strictly prohibited.</p>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <section class="mb-8">
+                        <h2 class="text-2xl font-bold text-tapnex-blue mb-4 flex items-center">
+                            <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                            6. Policy Governance
+                        </h2>
+                        <p class="text-gray-700 mb-4 leading-relaxed">
+                            These terms are subject to change, and continued use of the platform implies acceptance. The terms are governed by the laws of India, with disputes handled by Indian courts.
+                        </p>
+                    </section>
+                    
+                    <div class="border-t border-gray-200 pt-6 mt-8">
+                        <div class="bg-tapnex-gray rounded-xl p-6">
+                            <h3 class="text-lg font-bold text-gray-900 mb-3">Agreement & Contact</h3>
+                            <p class="text-gray-700 mb-4">
+                                By using our services, you acknowledge that you have read, understood, and agree to be bound by these Terms & Conditions. If you do not agree to these terms, please do not use our services.
+                            </p>
+                            <div class="space-y-2 text-gray-700">
+                                <p><strong>Email:</strong> <a href="mailto:info@tapnex.tech" class="text-tapnex-blue hover:underline">info@tapnex.tech</a></p>
+                                <p><strong>Phone:</strong> +91 88230 04349</p>
+                                <p><strong>Business Hours:</strong> Monday - Friday: 9:00 AM - 6:00 PM IST</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom TailwindCSS Configuration -->
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'tapnex-blue': '#1e40af',
+                    'tapnex-light': '#3b82f6', 
+                    'tapnex-dark': '#1e3a8a',
+                    'tapnex-accent': '#06b6d4',
+                    'tapnex-gray': '#f8fafc'
+                },
+                animation: {
+                    'slide-up': 'slideUp 0.8s ease-out'
+                },
+                keyframes: {
+                    slideUp: {
+                        '0%': { opacity: '0', transform: 'translateY(30px)' },
+                        '100%': { opacity: '1', transform: 'translateY(0)' }
+                    }
+                }
+            }
+        }
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,368 @@
+{% extends 'core/admin/base_admin.html' %}
+{% load static %}
+
+{% block admin_content %}
+<!-- Volunteer Statistics Header -->
+<div class="bg-gradient-to-r from-green-600 to-green-800 py-8 mb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <div class="flex justify-center mb-4">
+                <div class="h-16 w-16 bg-white rounded-full flex items-center justify-center shadow-lg">
+                    <svg class="h-8 w-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                    </svg>
+                </div>
+            </div>
+            <h1 class="text-3xl font-bold text-white mb-2">Volunteer Statistics</h1>
+            <p class="text-green-100">Track volunteer performance and ticket scanning activity</p>
+        </div>
+    </div>
+</div>
+
+<!-- Summary Statistics -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-blue-100 rounded-md flex items-center justify-center">
+                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500">Active Volunteers</p>
+                <p class="text-2xl font-semibold text-gray-900">{{ summary.active_volunteers }}/{{ summary.total_volunteers }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-green-100 rounded-md flex items-center justify-center">
+                    <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500">Total Scanned</p>
+                <p class="text-2xl font-semibold text-gray-900">{{ summary.total_scanned }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-purple-100 rounded-md flex items-center justify-center">
+                    <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500">Total Attendees</p>
+                <p class="text-2xl font-semibold text-gray-900">{{ summary.total_attendees }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <div class="w-8 h-8 bg-yellow-100 rounded-md flex items-center justify-center">
+                    <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="ml-4">
+                <p class="text-sm font-medium text-gray-500">Time Period</p>
+                <p class="text-2xl font-semibold text-gray-900">{{ date_range_text }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filters -->
+<div class="bg-white rounded-lg shadow-md p-6 mb-8">
+    <h2 class="text-lg font-semibold text-gray-900 mb-4">Filters</h2>
+    <form method="get" class="space-y-4 md:space-y-0 md:flex md:space-x-4">
+        <div class="flex-1">
+            <label for="date_filter" class="block text-sm font-medium text-gray-700">Date Range</label>
+            <select name="date_filter" id="date_filter" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <option value="today" {% if filters.date_filter == 'today' %}selected{% endif %}>Today</option>
+                <option value="yesterday" {% if filters.date_filter == 'yesterday' %}selected{% endif %}>Yesterday</option>
+                <option value="week" {% if filters.date_filter == 'week' %}selected{% endif %}>Last 7 days</option>
+                <option value="month" {% if filters.date_filter == 'month' %}selected{% endif %}>Last 30 days</option>
+                <option value="all" {% if filters.date_filter == 'all' %}selected{% endif %}>All time</option>
+            </select>
+        </div>
+        
+        <div class="flex-1">
+            <label for="event_id" class="block text-sm font-medium text-gray-700">Event</label>
+            <select name="event_id" id="event_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <option value="">All Events</option>
+                {% for event in events %}
+                    <option value="{{ event.id }}" {% if filters.event_id == event.id %}selected{% endif %}>{{ event.title }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="flex-1">
+            <label for="volunteer_id" class="block text-sm font-medium text-gray-700">Volunteer</label>
+            <select name="volunteer_id" id="volunteer_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                <option value="">All Volunteers</option>
+                {% for volunteer in active_volunteers %}
+                    <option value="{{ volunteer.id }}" {% if filters.volunteer_id == volunteer.id %}selected{% endif %}>
+                        {{ volunteer.first_name }} {{ volunteer.last_name }} ({{ volunteer.email }})
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="flex items-end">
+            <button type="submit" class="w-full md:w-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Apply Filters
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Volunteer Statistics Table -->
+<div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200">
+        <h2 class="text-lg font-semibold text-gray-900">Volunteer Performance</h2>
+    </div>
+    
+    {% if volunteer_stats %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Volunteer</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tickets Scanned</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Attendees</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Scan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Events Worked</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for stats in volunteer_stats %}
+                        <tr class="hover:bg-gray-50" data-volunteer-id="{{ stats.volunteer.id }}">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <div class="h-10 w-10 rounded-full bg-gradient-to-r from-blue-500 to-green-500 flex items-center justify-center">
+                                            <span class="text-white font-medium text-sm">
+                                                {{ stats.volunteer.first_name|first|default:stats.volunteer.email|first|upper }}{{ stats.volunteer.last_name|first|default:""|upper }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="ml-4">
+                                        <div class="text-sm font-medium text-gray-900">
+                                            {% if stats.volunteer.first_name or stats.volunteer.last_name %}
+                                                {{ stats.volunteer.first_name }} {{ stats.volunteer.last_name }}
+                                            {% else %}
+                                                {{ stats.volunteer.email }}
+                                            {% endif %}
+                                        </div>
+                                        <div class="text-sm text-gray-500">{{ stats.volunteer.email }}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <span class="text-sm font-medium text-gray-900">{{ stats.total_scanned }}</span>
+                                    {% if stats.total_scanned > 0 %}
+                                        <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            Active
+                                        </span>
+                                    {% else %}
+                                        <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            Inactive
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {{ stats.total_attendees }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {% if stats.last_scan %}
+                                    {{ stats.last_scan|date:"M d, Y H:i" }}
+                                {% else %}
+                                    Never
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ stats.event_breakdown|length }} event{{ stats.event_breakdown|length|pluralize }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <button onclick="showVolunteerDetails('{{ stats.volunteer.id }}')" class="text-blue-600 hover:text-blue-900 mr-4">
+                                    View Details
+                                </button>
+                            </td>
+                            
+                            <!-- Hidden data for modal -->
+                            <script type="application/json" id="volunteer-data-{{ stats.volunteer.id }}">
+                                {
+                                    "volunteer": {
+                                        "first_name": "{{ stats.volunteer.first_name|escapejs }}",
+                                        "last_name": "{{ stats.volunteer.last_name|escapejs }}",
+                                        "email": "{{ stats.volunteer.email|escapejs }}"
+                                    },
+                                    "total_scanned": {{ stats.total_scanned }},
+                                    "total_attendees": {{ stats.total_attendees }},
+                                    "event_breakdown": [
+                                        {% for breakdown in stats.event_breakdown_list %}
+                                        {
+                                            "event_name": "{{ breakdown.event_name|escapejs }}",
+                                            "count": {{ breakdown.count }},
+                                            "attendees": {{ breakdown.attendees }}
+                                        }{% if not forloop.last %},{% endif %}
+                                        {% endfor %}
+                                    ],
+                                    "recent_scans": [
+                                        {% for scan in stats.recent_scans %}
+                                        {
+                                            "ticket_number": "{{ scan.ticket_number|escapejs }}",
+                                            "used_at": "{{ scan.used_at|date:'c' }}",
+                                            "event": {
+                                                "title": "{{ scan.event.title|escapejs }}"
+                                            },
+                                            "total_admission_count": {{ scan.total_admission_count|default:1 }}
+                                        }{% if not forloop.last %},{% endif %}
+                                        {% endfor %}
+                                    ]
+                                }
+                            </script>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No volunteer activity found</h3>
+            <p class="mt-1 text-sm text-gray-500">Try adjusting your filters to see volunteer statistics.</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Volunteer Details Modal -->
+<div id="volunteerModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+    <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900" id="modalTitle">Volunteer Details</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="modalContent">
+                <!-- Content will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showVolunteerDetails(volunteerId) {
+    const modal = document.getElementById('volunteerModal');
+    const title = document.getElementById('modalTitle');
+    const content = document.getElementById('modalContent');
+    
+    // Get the JSON data for this volunteer
+    const dataElement = document.getElementById(`volunteer-data-${volunteerId}`);
+    if (!dataElement) {
+        console.error('Volunteer data not found');
+        return;
+    }
+    
+    const stats = JSON.parse(dataElement.textContent);
+    
+    const volunteerName = (stats.volunteer.first_name + ' ' + stats.volunteer.last_name).trim() || stats.volunteer.email;
+    title.textContent = `${volunteerName} - Detailed Statistics`;
+    
+    let eventBreakdownHtml = '';
+    for (const breakdown of stats.event_breakdown) {
+        eventBreakdownHtml += `
+            <div class="flex justify-between py-2 border-b">
+                <span class="font-medium">${breakdown.event_name}</span>
+                <span>${breakdown.count} tickets (${breakdown.attendees} attendees)</span>
+            </div>
+        `;
+    }
+    
+    let recentScansHtml = '';
+    for (const scan of stats.recent_scans) {
+        const scanDate = new Date(scan.used_at).toLocaleString();
+        recentScansHtml += `
+            <div class="flex justify-between items-center py-2 border-b">
+                <div>
+                    <div class="font-medium">${scan.ticket_number}</div>
+                    <div class="text-sm text-gray-500">${scan.event.title}</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm">${scanDate}</div>
+                    <div class="text-xs text-gray-500">${scan.total_admission_count} attendee(s)</div>
+                </div>
+            </div>
+        `;
+    }
+    
+    content.innerHTML = `
+        <div class="space-y-6">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <div class="text-2xl font-bold text-blue-600">${stats.total_scanned}</div>
+                    <div class="text-sm text-blue-800">Tickets Scanned</div>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <div class="text-2xl font-bold text-green-600">${stats.total_attendees}</div>
+                    <div class="text-sm text-green-800">Total Attendees</div>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="text-lg font-medium text-gray-900 mb-3">Event Breakdown</h4>
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    ${eventBreakdownHtml || '<p class="text-gray-500">No events worked</p>'}
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="text-lg font-medium text-gray-900 mb-3">Recent Scans (Last 10)</h4>
+                <div class="bg-gray-50 p-4 rounded-lg max-h-64 overflow-y-auto">
+                    ${recentScansHtml || '<p class="text-gray-500">No recent scans</p>'}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    modal.classList.remove('hidden');
+}
+
+function closeModal() {
+    document.getElementById('volunteerModal').classList.add('hidden');
+}
+
+// Close modal when clicking outside
+document.getElementById('volunteerModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeModal();
+    }
+});
+</script>
+
+{% endblock admin_content %}

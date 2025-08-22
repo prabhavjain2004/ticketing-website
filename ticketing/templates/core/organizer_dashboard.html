@@ -1,0 +1,676 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load ticketing_extras %}
+
+{% block title %}Organizer Dashboard - TapNex's Ticketing System{% endblock %}
+
+{% block extra_css %}
+<!-- Chart.js for data visualization -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- ApexCharts for additional visualizations -->
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+{% endblock %}
+
+{% block content %}
+<!-- Dashboard Header -->
+<div class="bg-gradient-to-r from-tapnex-blue via-tapnex-light to-tapnex-accent py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <div class="flex justify-center mb-6">
+                <div class="relative">
+                    <img src="{% static 'core/images/TAPNEX_LOGO_BG.jpg' %}" alt="TapNex Logo" class="w-24 h-24 rounded-full object-cover shadow-2xl border-4 border-white/30">
+                    <div class="absolute -top-1 -right-1 w-6 h-6 bg-green-400 rounded-full border-2 border-white animate-pulse"></div>
+                </div>
+            </div>
+            <h1 class="text-4xl lg:text-5xl font-black text-white mb-4 animate-fade-in">
+                Welcome Back, {{ user.first_name }}!
+            </h1>
+            <p class="text-xl text-white/90 max-w-2xl mx-auto animate-slide-up">
+                Your Analytics Hub: Track Revenue, Attendance, and Ticket Sales
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Main Dashboard Controls -->
+<div class="bg-tapnex-gray border-b border-gray-200 sticky top-0 z-10 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-wrap items-center justify-between py-4">
+            <div class="flex items-center space-x-4">
+                <h2 class="text-xl font-bold text-tapnex-blue">Analytics Dashboard</h2>
+                <div class="text-sm text-gray-500">Last updated: {{ now|date:"M d, Y, g:i a" }}</div>
+            </div>
+            <div class="flex items-center space-x-3 mt-3 sm:mt-0">
+                <a href="{% url 'organizer_promo_code_analytics' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-500 hover:bg-purple-600 transition-colors duration-300 mr-2">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zm7-10a1 1 0 01.707.293l.707.707L15.414 5a1 1 0 01-1.414 1.414L13 5.414V17a1 1 0 11-2 0V5.414L9.707 6.707a1 1 0 01-1.414-1.414l2-2A1 1 0 0112 2z" clip-rule="evenodd" />
+                    </svg>
+                    Promo Analytics
+                </a>
+        </div>
+    </div>
+</div>
+
+<!-- Dashboard Content -->
+<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <!-- KPI Stats Overview -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Key Performance Indicators</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <!-- Total Revenue KPI -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 hover:shadow-2xl transition-all duration-300 animate-slide-up" style="--delay: 0.1s">
+                <div class="flex items-center mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-r from-tapnex-blue to-tapnex-accent rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"></path>
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-2xl font-bold text-gray-900">Total Revenue</h3>
+                        <p class="text-gray-600">From all events</p>
+                    </div>
+                </div>
+                <div class="text-4xl font-black text-tapnex-blue">₹{{ total_revenue|floatformat:2 }}</div>
+                <div class="mt-2 text-sm text-gray-600">
+                    Across {{ total_tickets_sold }} tickets sold
+                    {% if revenue_change %}
+                        <span class="inline-flex items-center ml-2 px-2 py-0.5 rounded text-xs font-medium {% if revenue_change > 0 %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                            {% if revenue_change > 0 %}+{% endif %}{{ revenue_change }}% from last month
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Tickets Sold KPI -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 hover:shadow-2xl transition-all duration-300 animate-slide-up" style="--delay: 0.2s">
+                <div class="flex items-center mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-r from-tapnex-light to-tapnex-accent rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-2xl font-bold text-gray-900">Tickets Sold</h3>
+                        <p class="text-gray-600">Total across events</p>
+                    </div>
+                </div>
+                <div class="text-4xl font-black text-tapnex-blue">{{ total_tickets_sold }}</div>
+                <div class="mt-2 text-sm text-gray-600">
+                    From {{ events|length }} event{{ events|length|pluralize }}
+                    {% if tickets_change %}
+                        <span class="inline-flex items-center ml-2 px-2 py-0.5 rounded text-xs font-medium {% if tickets_change > 0 %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
+                            {% if tickets_change > 0 %}+{% endif %}{{ tickets_change }}% from last week
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Total Attendees KPI -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 hover:shadow-2xl transition-all duration-300 animate-slide-up" style="--delay: 0.3s">
+                <div class="flex items-center mb-6">
+                    <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-2xl font-bold text-gray-900">Total Attendees</h3>
+                        <p class="text-gray-600">Expected attendance</p>
+                    </div>
+                </div>
+                <div class="text-4xl font-black text-tapnex-blue">{{ total_attendees }}</div>
+                <div class="mt-2 text-sm text-gray-600">
+                    Based on ticket configurations
+                    {% if checked_in_percentage is not None %}
+                        <span class="inline-flex items-center ml-2 px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                            {{ checked_in_percentage }}% checked in
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Data Visualizations -->
+    <div class="mb-12">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-900">Performance Analytics</h2>
+            <div class="flex items-center space-x-2">
+                <a href="{% url 'download_organizer_report' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-tapnex-blue bg-white border-tapnex-blue hover:bg-tapnex-gray transition-colors duration-300">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 20a10 10 0 1 1 0-20 10 10 0 0 1 0 20zm-5.6-4.29a9.95 9.95 0 0 1 11.2 0 8 8 0 1 0-11.2 0zm6.12-7.64l3.02-3.02 1.41 1.41-3.02 3.02a2 2 0 1 1-1.41-1.41z"/>
+                    </svg>
+                    View Detailed Reports
+                </a>
+                <div class="relative">
+                    <button id="downloadDropdown" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-tapnex-blue hover:bg-tapnex-dark transition-colors duration-300">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                        Download
+                        <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                    <div id="downloadOptions" class="hidden absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-20">
+                        <div class="py-1">
+                            <a href="{% url 'download_organizer_report' %}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-tapnex-gray">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"/>
+                                </svg>
+                                CSV Report
+                            </a>
+                            <a href="{% url 'download_organizer_report' %}?format=xlsx" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-tapnex-gray">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm2 10a1 1 0 10-2 0v3a1 1 0 102 0v-3zm5-1a1 1 0 10-2 0v4a1 1 0 102 0v-4zm-8-2a1 1 0 01-1-1V6a1 1 0 012 0v2a1 1 0 01-1 1z" clip-rule="evenodd"/>
+                                </svg>
+                                Excel Report
+                            </a>
+                            <a href="{% url 'download_organizer_report' %}?format=pdf" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-tapnex-gray">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
+                                </svg>
+                                PDF Report
+                            </a>
+                            <a href="{% url 'download_ticket_sales' %}" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-tapnex-gray">
+                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v8a2 2 0 01-2 2h-2.22l.123.489.804.804A1 1 0 0113 18H7a1 1 0 01-.707-1.707l.804-.804L7.22 15H5a2 2 0 01-2-2V5zm5.771 7H5V5h10v7H8.771z" clip-rule="evenodd"/>
+                                </svg>
+                                Ticket Sales CSV
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Sales Revenue Over Time Chart -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300">
+                <h3 class="text-xl font-bold text-gray-900 mb-6">Revenue Over Time</h3>
+                <div class="h-80">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Ticket Sales by Type Chart -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300">
+                <h3 class="text-xl font-bold text-gray-900 mb-6">Sales by Ticket Type</h3>
+                <div class="h-80">
+                    <canvas id="ticketTypeChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Attendance Chart -->
+        <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300 mb-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-6">Event Attendance Status</h3>
+            <div class="h-80">
+                <canvas id="attendanceChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Events & Management Section -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Your Events Dashboard</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Events Table Card -->
+            <div class="lg:col-span-2 bg-white rounded-2xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300 animate-slide-up" style="--delay: 0.4s">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-900">Event Performance Summary</h3>
+                    <a href="{% url 'event_list' %}" class="text-tapnex-blue hover:text-tapnex-dark text-sm font-medium flex items-center">
+                        View all events
+                        <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+                        </svg>
+                    </a>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-tapnex-gray">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tickets</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% if events %}
+                                {% for event in events %}
+                                    <tr class="hover:bg-tapnex-gray/30 transition-colors duration-200">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-r from-tapnex-blue to-tapnex-accent flex items-center justify-center text-white font-bold">
+                                                    {{ event.title|slice:":1" }}
+                                                </div>
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">{{ event.title }}</div>
+                                                    <div class="text-xs text-gray-500">{{ event.venue|default:"No venue specified" }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ event.date|date:"M d, Y" }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">{{ event.tickets.count }} sold</div>
+                                            <div class="text-xs text-gray-500">{{ event.capacity|default:"∞" }} capacity</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            {% with event_revenue=event_revenues|get_item:event.id %}
+                                                <div class="text-sm font-medium text-gray-900">₹{{ event_revenue|default:"0"|floatformat:2 }}</div>
+                                            {% endwith %}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="{% url 'event_dashboard' event_id=event.id %}" class="text-tapnex-blue hover:text-tapnex-dark mr-3">
+                                                View Analytics
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="px-6 py-8 text-center">
+                                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <svg class="w-8 h-8 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </div>
+                                        <p class="text-gray-600 font-medium">No events created yet</p>
+                                        <p class="text-sm text-gray-500 mt-1">Please contact an administrator to create events</p>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Quick Actions & Profile Card -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300 animate-slide-up" style="--delay: 0.5s">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-gradient-to-r from-tapnex-blue to-tapnex-accent rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-bold text-gray-900">{{ user.first_name }} {{ user.last_name }}</h3>
+                        <p class="text-sm text-gray-600">{{ user.email }}</p>
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <h4 class="text-md font-semibold text-gray-700 mb-3">Quick Actions</h4>
+                    <div class="space-y-2">
+                        <a href="{% url 'organizer_promo_code_analytics' %}" class="flex items-center p-3 bg-tapnex-gray text-gray-700 rounded-xl hover:bg-gray-200 transition-colors duration-300">
+                            <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                                <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+                            </svg>
+                            Promo Code Analytics
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity Card -->
+                <div>
+                    <h4 class="text-md font-semibold text-gray-700 mb-3">Recent Activity</h4>
+                    <div class="space-y-3">
+                        {% for activity in recent_activities|slice:":5" %}
+                            <div class="p-3 bg-tapnex-gray rounded-xl">
+                                <div class="text-sm font-medium text-gray-900">{{ activity.action }}</div>
+                                <div class="text-xs text-gray-600">{{ activity.timestamp|date:"M d, Y, g:i a" }}</div>
+                            </div>
+                        {% empty %}
+                            <div class="p-3 bg-tapnex-gray rounded-xl">
+                                <div class="text-sm text-gray-600">No recent activity to show.</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Attendee Data Section -->
+    <div class="mb-12">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Attendee Insights</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Attendee Check-in Status -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-900">Check-in Progress</h3>
+                    <div class="text-sm text-gray-500">Live data</div>
+                </div>
+                <div class="space-y-6">
+                    {% for event in events|slice:":3" %}
+                        <div class="bg-tapnex-gray p-4 rounded-xl">
+                            <div class="flex justify-between mb-2">
+                                <div class="font-medium text-gray-900">{{ event.title }}</div>
+                                <div class="text-sm text-tapnex-blue">{{ event.date|date:"M d, Y" }}</div>
+                            </div>
+                            {% with checked_in=event_checkins|get_item:event.id|default:0 total=event.tickets.count %}
+                                {% if total > 0 %}
+                                    {% widthratio checked_in total 100 as percentage %}
+                                    <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
+                                        <div class="bg-tapnex-blue h-4 rounded-full" style="width: {{ percentage }}%"></div>
+                                    </div>
+                                    <div class="text-sm text-gray-600">{{ checked_in }} / {{ total }} attendees checked in ({{ percentage }}%)</div>
+                                {% else %}
+                                    <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
+                                        <div class="bg-tapnex-blue h-4 rounded-full" style="width: 0%"></div>
+                                    </div>
+                                    <div class="text-sm text-gray-600">No tickets sold yet</div>
+                                {% endif %}
+                            {% endwith %}
+                        </div>
+                    {% empty %}
+                        <div class="text-center p-8 bg-tapnex-gray rounded-xl">
+                            <p class="text-gray-600">No events to show check-in progress</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% if events|length > 3 %}
+                    <div class="mt-4 text-center">
+                        <a href="{% url 'event_list' %}" class="text-tapnex-blue hover:text-tapnex-dark text-sm">
+                            View all events
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Attendee Geographic Data -->
+            <div class="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 hover:shadow-2xl transition-all duration-300">
+                <h3 class="text-xl font-bold text-gray-900 mb-6">Attendee Demographics</h3>
+                <div class="h-80" id="attendeeDemographics"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js and UI Scripts -->
+<script>
+    // Chart.js Configuration
+    document.addEventListener('DOMContentLoaded', function() {
+        // Download Dropdown Functionality
+        const downloadBtn = document.getElementById('downloadDropdown');
+        const downloadOptions = document.getElementById('downloadOptions');
+        
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', function() {
+                downloadOptions.classList.toggle('hidden');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!downloadBtn.contains(event.target) && !downloadOptions.contains(event.target)) {
+                    downloadOptions.classList.add('hidden');
+                }
+            });
+        }
+        
+        // Revenue Over Time Chart
+        const revenueCtx = document.getElementById('revenueChart')?.getContext('2d');
+        if (revenueCtx) {
+            const revenueChart = new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: {{ revenue_dates|safe|default:"[]" }},
+                    datasets: [{
+                        label: 'Revenue (₹)',
+                        data: {{ revenue_amounts|safe|default:"[]" }},
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 2,
+                        pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 1,
+                        pointRadius: 4,
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ₹';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(2);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '₹' + value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Ticket Sales by Type Chart (Donut)
+        const typeCtx = document.getElementById('ticketTypeChart')?.getContext('2d');
+        if (typeCtx) {
+            const typeData = {{ ticket_types_data|safe|default:"[]" }};
+            const typeLabels = typeData.map(type => type.name);
+            const typeCounts = typeData.map(type => type.count);
+            
+            // Generate colors for donut chart
+            const generateColors = (count) => {
+                const colors = [
+                    'rgba(59, 130, 246, 0.8)',  // Blue
+                    'rgba(16, 185, 129, 0.8)',  // Green
+                    'rgba(245, 158, 11, 0.8)',  // Yellow
+                    'rgba(239, 68, 68, 0.8)',   // Red
+                    'rgba(139, 92, 246, 0.8)',  // Purple
+                    'rgba(236, 72, 153, 0.8)',  // Pink
+                    'rgba(75, 85, 99, 0.8)',    // Gray
+                    'rgba(14, 165, 233, 0.8)',  // Sky
+                    'rgba(20, 184, 166, 0.8)',  // Teal
+                    'rgba(249, 115, 22, 0.8)',  // Orange
+                ];
+                
+                // If we have more data than colors, reuse colors
+                const result = [];
+                for (let i = 0; i < count; i++) {
+                    result.push(colors[i % colors.length]);
+                }
+                return result;
+            };
+            
+            const typeColors = generateColors(typeLabels.length);
+            
+            const typeChart = new Chart(typeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: typeLabels,
+                    datasets: [{
+                        data: typeCounts,
+                        backgroundColor: typeColors,
+                        borderColor: '#fff',
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: ${value} tickets (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Attendance Chart (Check-ins vs Total)
+        const attendanceCtx = document.getElementById('attendanceChart')?.getContext('2d');
+        if (attendanceCtx) {
+            const attendanceChart = new Chart(attendanceCtx, {
+                type: 'bar',
+                data: {
+                    labels: {{ event_names|safe|default:"[]" }},
+                    datasets: [
+                        {
+                            label: 'Total Tickets',
+                            data: {{ total_tickets|safe|default:"[]" }},
+                            backgroundColor: 'rgba(59, 130, 246, 0.6)',
+                            borderColor: 'rgba(59, 130, 246, 1)',
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Checked-in Attendees',
+                            data: {{ checked_in_tickets|safe|default:"[]" }},
+                            backgroundColor: 'rgba(16, 185, 129, 0.6)',
+                            borderColor: 'rgba(16, 185, 129, 1)',
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Attendee Demographics Chart using ApexCharts
+        const attendeeDemographics = document.getElementById('attendeeDemographics');
+        if (attendeeDemographics) {
+            // Sample data - in a real application, this would come from your backend
+            const demographicOptions = {
+                series: [44, 55, 13, 43, 22],
+                chart: {
+                    width: '100%',
+                    height: 320,
+                    type: 'pie',
+                },
+                labels: ['18-24', '25-34', '35-44', '45-54', '55+'],
+                theme: {
+                    monochrome: {
+                        enabled: false
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        dataLabels: {
+                            offset: -5
+                        }
+                    }
+                },
+                colors: ['#1e40af', '#3b82f6', '#06b6d4', '#8b5cf6', '#ec4899'],
+                title: {
+                    text: 'Age Distribution',
+                    align: 'center',
+                    style: {
+                        fontSize: '16px',
+                        fontWeight: 600,
+                    }
+                },
+                legend: {
+                    show: true,
+                    position: 'bottom'
+                },
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: '100%'
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+
+            const demographicChart = new ApexCharts(attendeeDemographics, demographicOptions);
+            demographicChart.render();
+        }
+    });
+</script>
+
+<!-- Custom TailwindCSS Configuration -->
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'tapnex-blue': '#1e40af',
+                    'tapnex-light': '#3b82f6', 
+                    'tapnex-dark': '#1e3a8a',
+                    'tapnex-accent': '#06b6d4',
+                    'tapnex-gray': '#f8fafc'
+                },
+                animation: {
+                    'fade-in': 'fadeIn 0.8s ease-out',
+                    'slide-up': 'slideUp 0.8s ease-out',
+                    'bounce': 'bounce 2s infinite'
+                },
+                keyframes: {
+                    fadeIn: {
+                        '0%': { opacity: '0' },
+                        '100%': { opacity: '1' }
+                    },
+                    slideUp: {
+                        '0%': { opacity: '0', transform: 'translateY(30px)' },
+                        '100%': { opacity: '1', transform: 'translateY(0)' }
+                    }
+                }
+            }
+        }
+    }
+</script>
+{% endblock %}

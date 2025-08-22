@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Drive Image Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-container {
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .image-container {
+            width: 100%;
+            height: 300px;
+            border: 2px solid #007bff;
+            margin: 10px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>🎭 Google Drive Image Test</h1>
+    <p>Testing different Google Drive URL formats for the WILDCARD event banner</p>
+
+    <div class="test-container">
+        <h2>Test 1: LH3 GoogleUserContent URL (Primary)</h2>
+        <div class="status info" id="status1">Loading...</div>
+        <div class="image-container">
+            <img id="img1" src="https://lh3.googleusercontent.com/d/1ttTj3uAR5tjwAEojbqnijk2G3kzS3UNu=w1200" 
+                 alt="WILDCARD Banner - LH3"
+                 onload="updateStatus('status1', 'success', '✅ LH3 URL loaded successfully!')"
+                 onerror="updateStatus('status1', 'error', '❌ LH3 URL failed to load')">
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Test 2: Drive Thumbnail URL (Fallback)</h2>
+        <div class="status info" id="status2">Loading...</div>
+        <div class="image-container">
+            <img id="img2" src="https://drive.google.com/thumbnail?id=1ttTj3uAR5tjwAEojbqnijk2G3kzS3UNu&sz=w1200" 
+                 alt="WILDCARD Banner - Thumbnail"
+                 onload="updateStatus('status2', 'success', '✅ Thumbnail URL loaded successfully!')"
+                 onerror="updateStatus('status2', 'error', '❌ Thumbnail URL failed to load')">
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Test 3: Direct Drive UC URL</h2>
+        <div class="status info" id="status3">Loading...</div>
+        <div class="image-container">
+            <img id="img3" src="https://drive.google.com/uc?id=1ttTj3uAR5tjwAEojbqnijk2G3kzS3UNu" 
+                 alt="WILDCARD Banner - Direct"
+                 onload="updateStatus('status3', 'success', '✅ Direct URL loaded successfully!')"
+                 onerror="updateStatus('status3', 'error', '❌ Direct URL failed to load')">
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Test 4: Template Tag Simulation (with fallback)</h2>
+        <div class="status info" id="status4">Loading...</div>
+        <div class="image-container">
+            <img id="img4" src="https://lh3.googleusercontent.com/d/1ttTj3uAR5tjwAEojbqnijk2G3kzS3UNu=w1200" 
+                 alt="WILDCARD Banner - Template Tag"
+                 loading="lazy"
+                 onload="updateStatus('status4', 'success', '✅ Template tag simulation loaded successfully!')"
+                 onerror="this.onerror=null; this.src='https://drive.google.com/thumbnail?id=1ttTj3uAR5tjwAEojbqnijk2G3kzS3UNu&sz=w1200'; updateStatus('status4', 'info', '⚠️ Primary failed, trying fallback...');">
+        </div>
+    </div>
+
+    <script>
+        function updateStatus(elementId, type, message) {
+            const element = document.getElementById(elementId);
+            element.className = `status ${type}`;
+            element.textContent = message;
+        }
+
+        // Log image loading details
+        const images = document.querySelectorAll('img');
+        images.forEach((img, index) => {
+            img.addEventListener('load', function() {
+                console.log(`Image ${index + 1} loaded:`, this.src);
+                console.log(`Natural dimensions: ${this.naturalWidth} x ${this.naturalHeight}`);
+            });
+            
+            img.addEventListener('error', function() {
+                console.error(`Image ${index + 1} failed:`, this.src);
+            });
+        });
+
+        // Set timeout for loading status
+        setTimeout(() => {
+            document.querySelectorAll('.status.info').forEach(status => {
+                if (status.textContent === 'Loading...') {
+                    status.className = 'status error';
+                    status.textContent = '❌ Loading timeout';
+                }
+            });
+        }, 10000);
+    </script>
+</body>
+</html>

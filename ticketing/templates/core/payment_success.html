@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+{% block title %}Payment Successful - TapNex Ticketing System{% endblock %}
+
+{% block content %}
+<!-- Success Hero Section -->
+<div class="min-h-screen bg-gradient-to-br from-tapnex-blue via-tapnex-light to-tapnex-accent py-16">
+    <!-- Background Pattern Overlay -->
+    <div class="absolute inset-0 bg-black/10"></div>
+    <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"></div>
+    
+    <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Success Message Card -->
+        <div class="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-slide-up">
+            <!-- Success Icon and Header -->
+            <div class="bg-gradient-to-r from-green-500 to-green-600 px-8 py-12 text-center">
+                <div class="flex justify-center mb-6">
+                    <div class="relative">
+                        <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-lg animate-bounce">
+                            <svg class="w-12 h-12 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                            </svg>
+                        </div>
+                        <div class="absolute -inset-4 bg-white/20 rounded-full blur-xl"></div>
+                    </div>
+                </div>
+                <h1 class="text-4xl font-black text-white mb-4">Payment Successful!</h1>
+                <p class="text-xl text-green-100">Thank you for your purchase. Your payment has been confirmed and your tickets are ready.</p>
+            </div>
+
+            <!-- Order Details -->
+            <div class="p-8">
+                <div class="bg-tapnex-gray rounded-2xl p-6 mb-8">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                        <svg class="w-7 h-7 mr-3 text-tapnex-blue" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2H6zm1 2a1 1 0 000 2h6a1 1 0 100-2H7zm6 7a1 1 0 11-2 0 1 1 0 012 0zm-3 3a1 1 0 11-2 0 1 1 0 012 0z" clip-rule="evenodd"/>
+                        </svg>
+                        Order Details
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center p-3 bg-white rounded-xl">
+                                <span class="text-gray-600 font-medium">Order ID</span>
+                                <span class="text-tapnex-blue font-bold">{{ order_id }}</span>
+                            </div>
+                            {% if transaction_id %}
+                            <div class="flex justify-between items-center p-3 bg-white rounded-xl">
+                                <span class="text-gray-600 font-medium">Transaction ID</span>
+                                <span class="text-tapnex-blue font-bold">{{ transaction_id }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center p-3 bg-white rounded-xl">
+                                <span class="text-gray-600 font-medium">Status</span>
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                    CONFIRMED
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-center p-3 bg-white rounded-xl">
+                                <span class="text-gray-600 font-medium">Date</span>
+                                <span class="text-gray-900 font-bold">{{ recent_tickets.0.purchase_date|date:"F j, Y, g:i a" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Confirmation Message -->
+                <div class="text-center mb-8">
+                    <div class="bg-blue-50 border border-blue-200 rounded-xl p-6">
+                        <div class="flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                            </svg>
+                        </div>
+                        <p class="text-blue-800 font-medium">A confirmation email has been sent to your inbox.</p>
+                        <p class="text-blue-600 text-sm mt-2">You can view and download your tickets from your dashboard anytime.</p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 mb-8">
+                    <a href="{% url 'my_tickets' %}" class="flex-1 bg-gradient-to-r from-tapnex-blue to-tapnex-light text-white py-4 px-6 rounded-xl hover:from-tapnex-dark hover:to-tapnex-blue transition-all duration-300 font-bold text-center shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                        <svg class="w-5 h-5 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"/>
+                        </svg>
+                        View My Tickets
+                    </a>
+                    <a href="{% url 'home' %}" class="flex-1 bg-white border-2 border-tapnex-blue text-tapnex-blue py-4 px-6 rounded-xl hover:bg-tapnex-blue hover:text-white transition-all duration-300 font-semibold text-center">
+                        <svg class="w-5 h-5 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+                        </svg>
+                        Back to Homepage
+                    </a>
+                </div>
+
+                <!-- Tickets Section -->
+                {% if recent_tickets %}
+                <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-8 flex items-center">
+                        <svg class="w-8 h-8 mr-3 text-tapnex-blue" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"/>
+                        </svg>
+                        Your Tickets
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {% for ticket in recent_tickets %}
+                        <div class="bg-gradient-to-br from-white to-tapnex-gray border border-gray-200 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-lg font-bold text-gray-900">Ticket #{{ ticket.ticket_number }}</h3>
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800 mt-2">
+                                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                        </svg>
+                                        {{ ticket.status }}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-3 mb-6">
+                                <h4 class="text-xl font-bold text-tapnex-blue">{{ ticket.event.title }}</h4>
+                                <div class="space-y-2 text-gray-600">
+                                    <p><span class="font-medium">Type:</span> {{ ticket.ticket_type.type_name }}</p>
+                                    <p><span class="font-medium">Date:</span> {{ ticket.event.date }}</p>
+                                    <p><span class="font-medium">Time:</span> {{ ticket.event.time }}</p>
+                                    <p><span class="font-medium">Venue:</span> {{ ticket.event.venue }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex gap-3">
+                                <a href="{% url 'event_pass' ticket.id %}" class="flex-1 bg-gradient-to-r from-tapnex-accent to-cyan-500 text-white py-3 px-4 rounded-xl hover:from-cyan-600 hover:to-tapnex-accent transition-all duration-300 text-center font-semibold">
+                                    <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                    View Pass
+                                </a>
+                                <a href="{% url 'send_ticket_email' ticket.id %}" class="flex-1 bg-white border-2 border-tapnex-blue text-tapnex-blue py-3 px-4 rounded-xl hover:bg-tapnex-blue hover:text-white transition-all duration-300 text-center font-semibold">
+                                    <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
+                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
+                                    </svg>
+                                    Email Ticket
+                                </a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom TailwindCSS Configuration -->
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'tapnex-blue': '#1e40af',
+                    'tapnex-light': '#3b82f6', 
+                    'tapnex-dark': '#1e3a8a',
+                    'tapnex-accent': '#06b6d4',
+                    'tapnex-gray': '#f8fafc'
+                },
+                animation: {
+                    'fade-in': 'fadeIn 0.8s ease-out',
+                    'slide-up': 'slideUp 0.8s ease-out',
+                    'bounce': 'bounce 2s infinite'
+                },
+                keyframes: {
+                    fadeIn: {
+                        '0%': { opacity: '0' },
+                        '100%': { opacity: '1' }
+                    },
+                    slideUp: {
+                        '0%': { opacity: '0', transform: 'translateY(30px)' },
+                        '100%': { opacity: '1', transform: 'translateY(0)' }
+                    }
+                }
+            }
+        }
+    }
+</script>
+{% endblock %}

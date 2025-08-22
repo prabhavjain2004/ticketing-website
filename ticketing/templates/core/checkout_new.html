@@ -1,0 +1,665 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load ticketing_extras %}
+
+{% block title %}Checkout - TapNex Ticketing System{% endblock %}
+
+{% block content %}
+<!-- Checkout Hero Section -->
+<div class="min-h-screen bg-gradient-to-br from-tapnex-blue via-tapnex-light to-tapnex-accent py-16">
+    <!-- Background Pattern Overlay -->
+    <div class="absolute inset-0 bg-black/10"></div>
+    <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Checkout Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl font-black text-white mb-4">Secure Checkout</h1>
+            <div class="flex items-center justify-center text-white/80">
+                <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                </svg>
+                <span class="text-lg font-medium">Your transaction is secured with SSL encryption</span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Checkout Card -->
+            <div class="lg:col-span-2">
+                <div class="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-slide-up">
+                    <!-- Event Header -->
+                    <div class="bg-gradient-to-r from-tapnex-blue to-tapnex-light px-8 py-6">
+                        <h2 class="text-2xl font-black text-white flex items-center">
+                            <svg class="w-7 h-7 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                            </svg>
+                            {{ event.title }}
+                        </h2>
+                    </div>
+
+                    <div class="p-8">
+                        <!-- Ticket Summary -->
+                        <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center">
+                            <svg class="w-6 h-6 mr-3 text-tapnex-blue" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"/>
+                            </svg>
+                            Your Tickets
+                        </h3>
+                        
+                        <div class="space-y-4 mb-8">
+                            {% for item in ticket_types %}
+                            <div class="bg-tapnex-gray rounded-xl p-6 border border-gray-200 flex justify-between items-center">
+                                <div class="flex-1">
+                                    <h4 class="text-lg font-bold text-gray-900 mb-3">{{ item.type_name }}</h4>
+                                    
+                                    <!-- PROMINENT TOTAL ATTENDEES -->
+                                    <div class="mb-3">
+                                        <p class="text-sm text-gray-600 mb-1">Total Attendees</p>
+                                        <p class="text-4xl font-black text-tapnex-blue leading-none">{{ item.quantity|multiply:item.attendees_per_ticket|default:1 }}</p>
+                                        
+                                        <!-- SMALLER TICKET BREAKDOWN -->
+                                        <p class="text-sm text-gray-500 mt-2">
+                                            {{ item.quantity }} ticket{{ item.quantity|pluralize }} × {{ item.attendees_per_ticket|default:1 }} attendee{{ item.attendees_per_ticket|default:1|pluralize }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-2xl font-black text-tapnex-blue">₹{{ item.subtotal|floatformat:2 }}</p>
+                                    <p class="text-sm text-gray-500">₹{{ item.price }} per ticket</p>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Order Totals -->
+                        <div class="bg-white/80 backdrop-blur-sm rounded-xl border border-gray-200 p-6">
+                            <div class="space-y-4">
+                                <div class="flex justify-between text-lg">
+                                    <span class="text-gray-600">Subtotal:</span>
+                                    <span id="subtotal" class="font-semibold text-gray-900">₹{{ subtotal|floatformat:2 }}</span>
+                                </div>
+                                {% if discount > 0 %}
+                                <div id="discount-row" class="flex justify-between text-lg text-green-600">
+                                    <span id="discount-text">Discount:</span>
+                                    <span id="discount-amount" class="font-bold">- ₹{{ discount|floatformat:2 }}</span>
+                                </div>
+                                {% else %}
+                                <!-- Hidden discount row that will be shown when a promo code is applied -->
+                                <div id="discount-row" class="flex justify-between text-lg text-green-600 hidden">
+                                    <span id="discount-text">Discount:</span>
+                                    <span id="discount-amount" class="font-bold">- ₹0.00</span>
+                                </div>
+                                {% endif %}
+                                <div class="border-t border-gray-300 pt-4">
+                                    <div class="flex justify-between text-2xl font-black">
+                                        <span class="text-gray-900">Total:</span>
+                                        <span id="final-total" class="text-tapnex-blue">₹{{ total|floatformat:2 }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terms and Conditions Section -->
+                        <div class="mt-8 bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-6 shadow-sm">
+                            <div class="space-y-4">
+                                <h4 class="text-lg font-bold text-gray-900 flex items-center">
+                                    <svg class="w-5 h-5 mr-2 text-tapnex-blue" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                                    </svg>
+                                    Terms & Conditions
+                                </h4>
+                                
+                                <div class="flex items-start space-x-3">
+                                    <input type="checkbox" 
+                                           id="terms-checkbox" 
+                                           class="mt-1 h-4 w-4 text-tapnex-blue focus:ring-tapnex-blue border-gray-300 rounded">
+                                    <div class="flex-1">
+                                        <label for="terms-checkbox" class="text-sm text-gray-700">
+                                            I agree to the 
+                                            <button type="button" 
+                                                    id="view-terms-btn" 
+                                                    class="text-tapnex-blue hover:text-tapnex-dark underline font-medium">
+                                                Terms and Conditions
+                                            </button>
+                                            and understand that this is a binding agreement for ticket purchase.
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div id="terms-error" class="text-red-600 text-sm hidden bg-red-50 border border-red-200 rounded-lg p-3">
+                                    <div class="flex items-center">
+                                        <svg class="w-4 h-4 mr-2 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                        </svg>
+                                        Please accept the terms and conditions to proceed with your purchase.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Button -->
+                        <div class="mt-8">
+                            <button id="pay-btn" class="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-4 px-6 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                                <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"/>
+                                </svg>
+                                Pay Securely with Cashfree
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Promo Code Sidebar -->
+            <div class="lg:col-span-1">
+                <div class="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-slide-up" style="animation-delay: 0.2s;">
+                    <!-- Promo Header -->
+                    <div class="bg-gradient-to-r from-tapnex-accent to-tapnex-light px-6 py-4">
+                        <h3 class="text-xl font-black text-white flex items-center">
+                            <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732L14.146 12.8l-1.179 4.456a1 1 0 01-1.856.048L9.75 13.8 6.5 12.134a1 1 0 010-1.732L9.75 8.2l1.361-3.504A1 1 0 0112 2z" clip-rule="evenodd"/>
+                            </svg>
+                            Promo Code
+                        </h3>
+                    </div>
+
+                    <div class="p-6">
+                        <form id="promo-form" method="POST" action="{% url 'checkout' event_id=event.id %}">
+                            {% csrf_token %}
+                            <div class="space-y-4">
+                                <div>
+                                    <input type="text" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-tapnex-blue focus:border-transparent transition-all duration-300" 
+                                           placeholder="Enter Promo Code" 
+                                           id="promo-code-input" 
+                                           name="promo_code" 
+                                           value="{{ promo_code }}">
+                                </div>
+                                <button type="button" 
+                                        id="apply-promo-btn" 
+                                        class="w-full bg-tapnex-blue text-white py-3 px-4 rounded-lg hover:bg-tapnex-dark transition-all duration-300 font-semibold flex items-center justify-center">
+                                    <span>Apply Promo Code</span>
+                                    <svg id="promo-loading" class="w-5 h-5 ml-2 animate-spin hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </button>
+                                <small id="promo-message" class="text-sm block"></small>
+                            </div>
+                        </form>
+
+                        <!-- Promo Benefits -->
+                        <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h4 class="text-sm font-bold text-blue-800 mb-2">💰 Save More</h4>
+                            <p class="text-sm text-blue-700">Enter a valid promo code to get instant discounts on your ticket purchase!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Terms and Conditions Modal -->
+<div id="terms-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+        <!-- Modal Header -->
+        <div class="bg-gradient-to-r from-tapnex-blue to-tapnex-light px-6 py-4 flex justify-between items-center">
+            <h3 class="text-xl font-bold text-white flex items-center">
+                <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                </svg>
+                Terms and Conditions
+            </h3>
+            <button id="close-terms-modal" class="text-white hover:text-gray-200 transition-colors">
+                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Modal Content -->
+        <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+            <div class="space-y-6">
+                <!-- Event Terms -->
+                <div>
+                    <h4 class="text-lg font-bold text-gray-900 mb-3 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-tapnex-blue" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                        </svg>
+                        Event Terms and Conditions
+                    </h4>
+                    <div class="bg-gray-50 rounded-lg p-4 text-sm text-gray-700 space-y-3">
+                        <p><strong>Event Details:</strong> {{ event.title }}</p>
+                        <p><strong>Date & Time:</strong> {{ event.date|date:"F j, Y" }} at {{ event.time|time:"g:i A" }}</p>
+                        <p><strong>Venue:</strong> {{ event.venue }}</p>
+                        
+                        {% if event.description %}
+                        <div>
+                            <strong>Event Description:</strong>
+                            <p class="mt-1">{{ event.description }}</p>
+                        </div>
+                        {% endif %}
+                        
+                        {% if event.event_terms %}
+                        <div>
+                            <strong>Event Specific Terms & Conditions:</strong>
+                            <div class="mt-1 bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                <p class="whitespace-pre-line">{{ event.event_terms }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <div>
+                            <strong>General Event Guidelines:</strong>
+                            <ul class="mt-1 list-disc list-inside space-y-1">
+                                <li>Please arrive at least 30 minutes before the event start time</li>
+                                <li>Valid ID proof may be required for entry</li>
+                                <li>No refunds or exchanges unless the event is cancelled by the organizer</li>
+                                <li>Photography and recording policies will be announced at the venue</li>
+                                <li>Follow all venue rules and regulations</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Venue Terms -->
+                <div>
+                    <h4 class="text-lg font-bold text-gray-900 mb-3 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-tapnex-blue" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                        </svg>
+                        Venue Terms and Conditions
+                    </h4>
+                    <div class="bg-gray-50 rounded-lg p-4 text-sm text-gray-700 space-y-3">
+                        {% if event.venue_terms %}
+                        <div>
+                            <strong>Venue Specific Terms & Conditions:</strong>
+                            <div class="mt-1 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                                <p class="whitespace-pre-line">{{ event.venue_terms }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <div>
+                            <strong>General Venue Rules:</strong>
+                            <ul class="mt-1 list-disc list-inside space-y-1">
+                                <li>No smoking or consumption of alcohol in restricted areas</li>
+                                <li>No outside food or beverages unless permitted</li>
+                                <li>Follow all safety instructions and emergency procedures</li>
+                                <li>Respect other attendees and venue staff</li>
+                                <li>No weapons or dangerous items allowed</li>
+                                <li>Venue reserves the right to refuse entry or remove attendees for violations</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <strong>Accessibility:</strong>
+                            <p class="mt-1">Please contact the venue directly for accessibility accommodations and special requirements.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Terms -->
+                <div>
+                    <h4 class="text-lg font-bold text-gray-900 mb-3 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-tapnex-blue" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"/>
+                        </svg>
+                        Payment Terms and Conditions
+                    </h4>
+                    <div class="bg-gray-50 rounded-lg p-4 text-sm text-gray-700 space-y-3">
+                        <div>
+                            <strong>Payment Processing:</strong>
+                            <ul class="mt-1 list-disc list-inside space-y-1">
+                                <li>All payments are processed securely through Cashfree Payment Gateway</li>
+                                <li>Payment confirmation will be sent to your registered email address</li>
+                                <li>Transaction fees may apply as per payment gateway terms</li>
+                                <li>Failed payments will not result in ticket reservation</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <strong>Refund Policy:</strong>
+                            <ul class="mt-1 list-disc list-inside space-y-1">
+                                <li>No refunds for completed purchases unless event is cancelled</li>
+                                <li>Event cancellations will result in full refund within 7-10 business days</li>
+                                <li>Refunds will be processed to the original payment method</li>
+                                <li>Processing fees are non-refundable</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- General Terms -->
+                <div>
+                    <h4 class="text-lg font-bold text-gray-900 mb-3 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-tapnex-blue" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                        General Terms and Conditions
+                    </h4>
+                    <div class="bg-gray-50 rounded-lg p-4 text-sm text-gray-700 space-y-3">
+                        <div>
+                            <strong>Ticket Usage:</strong>
+                            <ul class="mt-1 list-disc list-inside space-y-1">
+                                <li>Tickets are non-transferable unless explicitly stated</li>
+                                <li>One ticket per person unless specified otherwise</li>
+                                <li>Duplicate tickets will be invalidated</li>
+                                <li>Organizer reserves the right to modify event details with prior notice</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <strong>Liability:</strong>
+                            <ul class="mt-1 list-disc list-inside space-y-1">
+                                <li>Attendees participate at their own risk</li>
+                                <li>Organizer is not liable for personal injury or property damage</li>
+                                <li>Attendees are responsible for their personal belongings</li>
+                                <li>Force majeure events may result in event cancellation</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <strong>Privacy and Data:</strong>
+                            <ul class="mt-1 list-disc list-inside space-y-1">
+                                <li>Personal information will be used for event management only</li>
+                                <li>Contact details may be shared with venue for safety purposes</li>
+                                <li>Photography consent is implied by attendance</li>
+                                <li>Marketing communications can be opted out of</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal Footer -->
+        <div class="bg-gray-50 px-6 py-4 flex justify-end">
+            <button id="accept-terms-btn" class="bg-tapnex-blue text-white px-6 py-2 rounded-lg hover:bg-tapnex-dark transition-colors font-medium">
+                I Accept Terms & Conditions
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Initialize Cashfree with dynamic environment detection
+    // This will be set by the backend response
+    let cashfree = null;
+    
+    function initializeCashfree(isDebugMode) {
+        const mode = isDebugMode ? "sandbox" : "production";
+        console.log(`Initializing Cashfree in ${mode} mode`);
+        cashfree = new Cashfree({
+            mode: mode
+        });
+    }
+    
+    // Initialize with environment based on Django settings
+    initializeCashfree({% if debug %}true{% else %}false{% endif %});
+
+
+    // --- TERMS AND CONDITIONS MODAL LOGIC ---
+    const termsModal = document.getElementById('terms-modal');
+    const viewTermsBtn = document.getElementById('view-terms-btn');
+    const closeTermsModal = document.getElementById('close-terms-modal');
+    const acceptTermsBtn = document.getElementById('accept-terms-btn');
+    const termsCheckbox = document.getElementById('terms-checkbox');
+    const termsError = document.getElementById('terms-error');
+    const payBtn = document.getElementById('pay-btn');
+
+    // Function to update payment button state
+    function updatePaymentButtonState() {
+        if (termsCheckbox.checked) {
+            payBtn.disabled = false;
+            payBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            termsError.classList.add('hidden');
+        } else {
+            payBtn.disabled = true;
+            payBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        }
+    }
+
+    // Initialize payment button state
+    updatePaymentButtonState();
+
+    // Terms checkbox change event
+    termsCheckbox.addEventListener('change', function() {
+        updatePaymentButtonState();
+        if (this.checked) {
+            termsError.classList.add('hidden');
+        }
+    });
+
+    // View terms button click
+    viewTermsBtn.addEventListener('click', function() {
+        termsModal.classList.remove('hidden');
+        termsModal.classList.add('flex');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+    });
+
+    // Close modal button click
+    closeTermsModal.addEventListener('click', function() {
+        termsModal.classList.add('hidden');
+        termsModal.classList.remove('flex');
+        document.body.style.overflow = 'auto'; // Restore scrolling
+    });
+
+    // Accept terms button click
+    acceptTermsBtn.addEventListener('click', function() {
+        termsCheckbox.checked = true;
+        updatePaymentButtonState();
+        termsModal.classList.add('hidden');
+        termsModal.classList.remove('flex');
+        document.body.style.overflow = 'auto';
+    });
+
+    // Close modal when clicking outside
+    termsModal.addEventListener('click', function(e) {
+        if (e.target === termsModal) {
+            termsModal.classList.add('hidden');
+            termsModal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !termsModal.classList.contains('hidden')) {
+            termsModal.classList.add('hidden');
+            termsModal.classList.remove('flex');
+            document.body.style.overflow = 'auto';
+        }
+    });
+
+    // --- PROMO CODE VALIDATION LOGIC ---
+    function validatePromoCode(promoCode) {
+        const eventId = "{{ event.id }}";
+        console.log('Event ID:', eventId);
+        const promoMessage = document.getElementById('promo-message');
+        const promoLoadingIcon = document.getElementById('promo-loading');
+        const applyPromoBtn = document.getElementById('apply-promo-btn');
+        
+        // Show loading indicator
+        console.log('Showing loading indicator');
+        promoLoadingIcon.classList.remove('hidden');
+        applyPromoBtn.disabled = true;
+
+        if (!promoCode) {
+            console.log('No promo code entered');
+            promoMessage.textContent = 'Please enter a promo code.';
+            promoMessage.className = 'text-sm text-red-600';
+            promoLoadingIcon.classList.add('hidden');
+            applyPromoBtn.disabled = false;
+            return Promise.resolve({ valid: false });
+        }
+
+        const validationUrl = `/api/validate-promo/${encodeURIComponent(promoCode)}/?event_id=${eventId}`;
+        console.log('Making API call to:', validationUrl);
+
+        return fetch(validationUrl)
+            .then(response => {
+                console.log('API response status:', response.status);
+                return response.json();
+            })
+            .then(data => {
+                if (data.valid) {
+                    promoMessage.textContent = data.message;
+                    promoMessage.className = 'text-sm text-green-600';
+                    
+                    // Update UI with discount info
+                    const discountRow = document.getElementById('discount-row');
+                    document.getElementById('discount-amount').textContent = `- ₹${data.discount.toFixed(2)}`;
+                    
+                    // Make sure discount row is visible
+                    if (discountRow) {
+                        discountRow.classList.remove('hidden');
+                    }
+                    
+                    document.getElementById('final-total').textContent = `₹${data.final_total.toFixed(2)}`;
+                } else {
+                    promoMessage.textContent = data.message;
+                    promoMessage.className = 'text-sm text-red-600';
+                    
+                    // Reset to original subtotal if promo is invalid
+                    const discountRow = document.getElementById('discount-row');
+                    if (discountRow) {
+                        discountRow.classList.add('hidden');
+                    }
+                    document.getElementById('final-total').textContent = `₹{{ subtotal|floatformat:2 }}`;
+                }
+                
+                // Hide loading indicator
+                promoLoadingIcon.classList.add('hidden');
+                applyPromoBtn.disabled = false;
+                return data;
+            })
+            .catch(error => {
+                promoMessage.textContent = 'An error occurred while validating the promo code.';
+                promoMessage.className = 'text-sm text-red-600';
+                console.error('Promo validation error:', error);
+                
+                // Hide loading indicator
+                promoLoadingIcon.classList.add('hidden');
+                applyPromoBtn.disabled = false;
+                return { valid: false };
+            });
+    }
+    
+    // Apply promo code button click handler
+    const applyPromoButton = document.getElementById('apply-promo-btn');
+    console.log('Apply promo button found:', applyPromoButton);
+    
+    if (applyPromoButton) {
+        applyPromoButton.addEventListener('click', function() {
+            console.log('Promo button clicked');
+            const promoCode = document.getElementById('promo-code-input').value.trim();
+            console.log('Promo code entered:', promoCode);
+            validatePromoCode(promoCode);
+        });
+    } else {
+        console.error('Apply promo button not found!');
+    }
+    
+    // Apply promo code when pressing Enter in the input field
+    document.getElementById('promo-code-input').addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            const promoCode = this.value.trim();
+            validatePromoCode(promoCode);
+        }
+    });
+    
+    // Auto-apply promo code if it exists in the session when page loads
+    const savedPromoCode = "{{ promo_code|escapejs }}";
+    if (savedPromoCode) {
+        document.getElementById('promo-code-input').value = savedPromoCode;
+        // Defer validation a tick to ensure listeners/UI are ready
+        setTimeout(() => validatePromoCode(savedPromoCode), 300);
+    }
+
+    // --- CASHFREE PAYMENT LOGIC ---
+    document.getElementById("pay-btn").addEventListener("click", function() {
+        // Check if terms are accepted
+        if (!termsCheckbox.checked) {
+            termsError.classList.remove('hidden');
+            termsError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+
+        this.disabled = true;
+        this.innerHTML = '<svg class="w-5 h-5 animate-spin inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>Processing Payment...';
+
+        fetch("{% url 'create_cashfree_order' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({
+                terms_accepted: termsCheckbox.checked,
+                terms_accepted_at: new Date().toISOString()
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw new Error(err.error || 'Network response was not ok'); });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.payment_session_id) {
+                // Reinitialize Cashfree with the correct environment from backend
+                initializeCashfree(data.debug);
+                
+                cashfree.checkout({
+                    paymentSessionId: data.payment_session_id
+                });
+                this.disabled = false;
+                this.innerHTML = '<svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"/></svg>Pay Securely with Cashfree';
+            } else {
+                console.error('Error creating order:', data.error);
+                alert('Error: ' + data.error);
+                this.disabled = false;
+                this.innerHTML = '<svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"/></svg>Pay Securely with Cashfree';
+            }
+        })
+        .catch(error => {
+            console.error('Fetch Error:', error);
+            alert('An unexpected error occurred: ' + error.message);
+            document.getElementById("pay-btn").disabled = false;
+            document.getElementById("pay-btn").innerHTML = '<svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"/></svg>Pay Securely with Cashfree';
+        });
+    });
+});
+</script>
+
+<!-- Custom TailwindCSS Configuration -->
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'tapnex-blue': '#1e40af',
+                    'tapnex-light': '#3b82f6', 
+                    'tapnex-dark': '#1e3a8a',
+                    'tapnex-accent': '#06b6d4',
+                    'tapnex-gray': '#f8fafc'
+                },
+                animation: {
+                    'slide-up': 'slideUp 0.8s ease-out'
+                },
+                keyframes: {
+                    slideUp: {
+                        '0%': { opacity: '0', transform: 'translateY(30px)' },
+                        '100%': { opacity: '1', transform: 'translateY(0)' }
+                    }
+                }
+            }
+        }
+    }
+</script>
+{% endblock %}

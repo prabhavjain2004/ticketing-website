@@ -1,0 +1,350 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Event Commission Management - TapNex{% endblock %}
+
+{% block extra_css %}
+<style>
+    .commission-management {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .page-header {
+        margin-bottom: 2rem;
+    }
+    
+    .page-header h1 {
+        color: #1f2937;
+        margin-bottom: 0.5rem;
+    }
+    
+    .page-header p {
+        color: #6b7280;
+    }
+    
+    .commission-form {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        align-items: end;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #374151;
+    }
+    
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font-size: 1rem;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #1e3a8a;
+        box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+    }
+    
+    .btn-submit {
+        background: #1e3a8a;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 1rem;
+    }
+    
+    .btn-submit:hover {
+        background: #1e40af;
+    }
+    
+    .events-table {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .table-header {
+        background: #f8fafc;
+        padding: 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .table-header h2 {
+        margin: 0;
+        color: #1f2937;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .events-table table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .events-table th,
+    .events-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .events-table th {
+        background: #f9fafb;
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.875rem;
+    }
+    
+    .events-table tr:hover {
+        background: #f9fafb;
+    }
+    
+    .event-title {
+        font-weight: 600;
+        color: #1f2937;
+    }
+    
+    .commission-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .commission-type {
+        font-size: 0.875rem;
+        color: #6b7280;
+    }
+    
+    .commission-value {
+        font-weight: 600;
+        color: #059669;
+    }
+    
+    .no-commission {
+        color: #6b7280;
+        font-style: italic;
+    }
+    
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .status-active {
+        background: #dcfce7;
+        color: #166534;
+    }
+    
+    .status-draft {
+        background: #fef3c7;
+        color: #92400e;
+    }
+    
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #6b7280;
+        text-decoration: none;
+        margin-bottom: 1rem;
+    }
+    
+    .back-link:hover {
+        color: #374151;
+        text-decoration: none;
+    }
+    
+    .help-text {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-top: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <a href="{% url 'invoice_dashboard' %}" class="back-link">
+        ← Back to Invoice Dashboard
+    </a>
+
+    <div class="commission-management">
+        <div class="page-header">
+            <h1 class="text-3xl font-bold">Event Commission Management</h1>
+            <p>Configure commission settings for events. These settings determine how TapNex service fees are calculated.</p>
+        </div>
+
+        <!-- Commission Configuration Form -->
+        <div class="commission-form">
+            <h2 class="text-xl font-semibold mb-4">Configure Commission Settings</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="event_id">Select Event</label>
+                        <select id="event_id" name="event_id" required>
+                            <option value="">Choose an event...</option>
+                            {% for event in events %}
+                            <option value="{{ event.id }}">{{ event.title }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="commission_type">Commission Type</label>
+                        <select id="commission_type" name="commission_type" required>
+                            <option value="percentage">Percentage (%)</option>
+                            <option value="fixed">Fixed Amount (₹)</option>
+                        </select>
+                        <div class="help-text">
+                            Percentage: Commission calculated as % of total ticket price<br>
+                            Fixed: Fixed amount per ticket regardless of price
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="commission_value">Commission Value</label>
+                        <input type="number" id="commission_value" name="commission_value" 
+                               step="0.01" min="0" required placeholder="e.g., 10 or 50">
+                        <div class="help-text">
+                            For percentage: Enter 10 for 10%<br>Maximum: 100%
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="submit" class="btn-submit">Save Commission Settings</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Events with Commission Settings -->
+        <div class="events-table">
+            <div class="table-header">
+                <h2>Current Commission Settings</h2>
+            </div>
+            
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Event Name</th>
+                            <th>Event Status</th>
+                            <th>Commission Type</th>
+                            <th>Commission Value</th>
+                            <th>Last Updated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for event in events %}
+                        <tr>
+                            <td>
+                                <div class="event-title">{{ event.title }}</div>
+                                <div style="font-size: 0.875rem; color: #6b7280;">
+                                    {{ event.date|date:"M j, Y" }}
+                                </div>
+                            </td>
+                            <td>
+                                <span class="status-badge {% if event.status == 'PUBLISHED' %}status-active{% else %}status-draft{% endif %}">
+                                    {{ event.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if event.commission_settings %}
+                                <div class="commission-info">
+                                    <span class="commission-type">
+                                        {{ event.commission_settings.get_commission_type_display }}
+                                    </span>
+                                </div>
+                                {% else %}
+                                <span class="no-commission">No commission set</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if event.commission_settings %}
+                                <div class="commission-value">
+                                    {% if event.commission_settings.commission_type == 'percentage' %}
+                                        {{ event.commission_settings.commission_value }}%
+                                    {% else %}
+                                        ₹{{ event.commission_settings.commission_value }}
+                                    {% endif %}
+                                </div>
+                                {% else %}
+                                <span class="no-commission">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if event.commission_settings %}
+                                <div style="font-size: 0.875rem; color: #6b7280;">
+                                    {{ event.commission_settings.updated_at|date:"M j, Y" }}
+                                </div>
+                                {% else %}
+                                <span class="no-commission">-</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" style="text-align: center; padding: 3rem; color: #6b7280;">
+                                No events found
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const commissionTypeSelect = document.getElementById('commission_type');
+    const commissionValueInput = document.getElementById('commission_value');
+    const helpText = commissionValueInput.parentNode.querySelector('.help-text');
+    
+    function updateHelpText() {
+        const type = commissionTypeSelect.value;
+        if (type === 'percentage') {
+            helpText.innerHTML = 'For percentage: Enter 10 for 10%<br>Maximum: 100%';
+            commissionValueInput.max = '100';
+            commissionValueInput.placeholder = 'e.g., 10 for 10%';
+        } else if (type === 'fixed') {
+            helpText.innerHTML = 'For fixed: Enter 50 for ₹50<br>Enter amount in rupees';
+            commissionValueInput.removeAttribute('max');
+            commissionValueInput.placeholder = 'e.g., 50 for ₹50';
+        }
+    }
+    
+    commissionTypeSelect.addEventListener('change', updateHelpText);
+    updateHelpText(); // Initial call
+});
+</script>
+{% endblock %}

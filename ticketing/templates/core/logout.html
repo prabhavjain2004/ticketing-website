@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Logged Out - TapNex's Ticketing System{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+        <!-- Success State -->
+        <div class="text-center">
+            <div class="flex justify-center mb-6">
+                <div class="relative">
+                    <div class="bg-gradient-to-br from-green-400 to-green-600 p-4 rounded-full shadow-2xl">
+                        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <div class="absolute -inset-2 bg-gradient-to-r from-green-400/20 to-green-600/20 rounded-full blur-xl animate-pulse"></div>
+                </div>
+            </div>
+            <h2 class="text-3xl font-black text-gray-900 mb-4">Successfully Logged Out</h2>
+            <p class="text-gray-600 text-lg">Thank you for using TapNex! You have been securely logged out of your account.</p>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="bg-white/80 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 p-8 space-y-4">
+            <a href="{% url 'login' %}" class="group relative w-full bg-gradient-to-r from-tapnex-blue to-tapnex-light text-white py-4 px-6 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl transform transition-all duration-300 hover:from-tapnex-light hover:to-tapnex-accent hover:scale-105 block text-center">
+                <div class="absolute inset-0 bg-gradient-to-r from-tapnex-light to-tapnex-accent rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                <div class="relative flex items-center justify-center">
+                    <svg class="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                    </svg>
+                    Log In Again
+                </div>
+            </a>
+            
+            <a href="{% url 'home' %}" class="group w-full bg-white border-2 border-gray-200 text-gray-700 py-4 px-6 rounded-2xl font-semibold text-lg hover:shadow-lg transition-all duration-300 hover:border-tapnex-blue hover:text-tapnex-blue transform hover:scale-105 block text-center">
+                <div class="flex items-center justify-center">
+                    <svg class="w-6 h-6 mr-3 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    Return to Home
+                </div>
+            </a>
+        </div>
+
+        <!-- Security Note -->
+        <div class="text-center">
+            <div class="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                <div class="flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                    <p class="text-blue-700 text-sm font-medium">Your session has been securely terminated</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

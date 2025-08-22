@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Static Files Test - TapNex{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div class="bg-white rounded-lg shadow-lg p-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8 text-center">Static Files Test Dashboard</h1>
+        
+        <!-- Logo Tests -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">🖼️ Logo Tests</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- TapNex Logo Test -->
+                <div class="bg-gray-50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">TapNex Logo Test</h3>
+                    <div class="text-center mb-4">
+                        <div class="logo-container inline-block">
+                            <img src="{% static 'images/logos/TAPNEX_LOGO_BG.jpg' %}"
+                                 alt="TapNex Logo" 
+                                 class="mx-auto h-24 w-24 rounded-full object-cover shadow-lg border-2 border-blue-200"
+                                 id="tapnex-logo"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'; document.getElementById('tapnex-error').style.display='block';"
+                                 onload="document.getElementById('tapnex-success').style.display='block';">
+                            <div class="logo-fallback h-24 w-24 mx-auto">
+                                <span class="text-white font-bold">TN</span>
+                            </div>
+                        </div>
+                        <div class="hidden text-red-500 text-sm mt-2" id="tapnex-error">
+                            ❌ TapNex logo failed to load
+                        </div>
+                        <div class="hidden text-green-500 text-sm mt-2" id="tapnex-success">
+                            ✅ TapNex logo loaded successfully
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">Path: {% static 'images/logos/TAPNEX_LOGO_BG.jpg' %}</p>
+                    <div class="mt-4">
+                        <button onclick="testImageLoad('{% static 'images/logos/TAPNEX_LOGO_BG.jpg' %}', 'tapnex-test-result')" 
+                                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                            Test Direct Load
+                        </button>
+                        <div id="tapnex-test-result" class="mt-2 text-sm"></div>
+                    </div>
+                </div>
+
+                <!-- NexGen FC Logo Test -->
+                <div class="bg-gray-50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">NexGen FC Logo Test</h3>
+                    <div class="text-center mb-4">
+                        <div class="logo-container inline-block">
+                            <img src="{% static 'images/logos/LOGO_NEXGEN_FC.png' %}"
+                                 alt="NexGen FC Logo" 
+                                 class="mx-auto h-24 w-24 rounded-full object-cover shadow-lg border-2 border-blue-200"
+                                 id="nexgen-logo"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'; document.getElementById('nexgen-error').style.display='block';"
+                                 onload="document.getElementById('nexgen-success').style.display='block';">
+                            <div class="logo-fallback h-24 w-24 mx-auto">
+                                <span class="text-white font-bold">NG</span>
+                            </div>
+                        </div>
+                        <div class="hidden text-red-500 text-sm mt-2" id="nexgen-error">
+                            ❌ NexGen FC logo failed to load
+                        </div>
+                        <div class="hidden text-green-500 text-sm mt-2" id="nexgen-success">
+                            ✅ NexGen FC logo loaded successfully
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">Path: {% static 'images/logos/LOGO_NEXGEN_FC.png' %}</p>
+                    <div class="mt-4">
+                        <button onclick="testImageLoad('{% static 'images/logos/LOGO_NEXGEN_FC.png' %}', 'nexgen-test-result')" 
+                                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                            Test Direct Load
+                        </button>
+                        <div id="nexgen-test-result" class="mt-2 text-sm"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- URL Tests -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">🔗 URL Generation Tests</h2>
+            <div class="bg-gray-50 rounded-lg p-6">
+                <div class="space-y-4">
+                    <div>
+                        <strong>TapNex Logo URL:</strong> 
+                        <code class="bg-white px-2 py-1 rounded text-sm">{% static 'images/logos/TAPNEX_LOGO_BG.jpg' %}</code>
+                        <button onclick="copyToClipboard('{% static 'images/logos/TAPNEX_LOGO_BG.jpg' %}')" 
+                                class="ml-2 text-blue-500 hover:text-blue-700">📋 Copy</button>
+                    </div>
+                    <div>
+                        <strong>NexGen FC Logo URL:</strong> 
+                        <code class="bg-white px-2 py-1 rounded text-sm">{% static 'images/logos/LOGO_NEXGEN_FC.png' %}</code>
+                        <button onclick="copyToClipboard('{% static 'images/logos/LOGO_NEXGEN_FC.png' %}')" 
+                                class="ml-2 text-blue-500 hover:text-blue-700">📋 Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Structure -->
+        <div class="mb-12">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">📁 Expected File Structure</h2>
+            <div class="bg-gray-50 rounded-lg p-6">
+                <pre class="text-sm text-gray-700"><code>ticketing/
+├── static/
+│   └── images/
+│       └── logos/
+│           ├── TAPNEX_LOGO_BG.jpg
+│           └── LOGO_NEXGEN_FC.png</code></pre>
+            </div>
+        </div>
+
+        <!-- Browser Environment Info -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">🌐 Environment Info</h2>
+            <div class="bg-gray-50 rounded-lg p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div><strong>User Agent:</strong> <span id="user-agent" class="break-all"></span></div>
+                    <div><strong>Current URL:</strong> <span id="current-url" class="break-all"></span></div>
+                    <div><strong>Protocol:</strong> <span id="protocol"></span></div>
+                    <div><strong>Host:</strong> <span id="host"></span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="text-center space-x-4">
+            <button onclick="testAllImages()" class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">
+                🧪 Test All Images
+            </button>
+            <button onclick="refreshPage()" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600">
+                🔄 Refresh Page
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Test image loading
+function testImageLoad(url, resultId) {
+    const img = new Image();
+    const resultDiv = document.getElementById(resultId);
+    
+    resultDiv.innerHTML = '⏳ Testing...';
+    resultDiv.className = 'mt-2 text-sm text-blue-600';
+    
+    img.onload = function() {
+        resultDiv.innerHTML = `✅ Image loads successfully (${img.width}x${img.height})`;
+        resultDiv.className = 'mt-2 text-sm text-green-600';
+    };
+    
+    img.onerror = function() {
+        resultDiv.innerHTML = '❌ Image failed to load';
+        resultDiv.className = 'mt-2 text-sm text-red-600';
+    };
+    
+    img.src = url;
+}
+
+// Test all images
+function testAllImages() {
+    testImageLoad('{% static 'images/logos/TAPNEX_LOGO_BG.jpg' %}', 'tapnex-test-result');
+    testImageLoad('{% static 'images/logos/LOGO_NEXGEN_FC.png' %}', 'nexgen-test-result');
+}
+
+// Copy to clipboard
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(function() {
+        alert('URL copied to clipboard!');
+    }).catch(function() {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        alert('URL copied to clipboard!');
+    });
+}
+
+// Refresh page
+function refreshPage() {
+    window.location.reload();
+}
+
+// Set environment info
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('user-agent').textContent = navigator.userAgent;
+    document.getElementById('current-url').textContent = window.location.href;
+    document.getElementById('protocol').textContent = window.location.protocol;
+    document.getElementById('host').textContent = window.location.host;
+    
+    // Auto-test all images on load
+    setTimeout(testAllImages, 1000);
+});
+</script>
+{% endblock %}

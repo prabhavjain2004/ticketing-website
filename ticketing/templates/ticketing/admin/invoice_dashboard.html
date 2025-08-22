@@ -1,0 +1,346 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Invoice Dashboard - TapNex{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-left: 4px solid #1e3a8a;
+    }
+    
+    .stat-card h3 {
+        margin: 0 0 0.5rem 0;
+        color: #374151;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .stat-card .value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #1e3a8a;
+        margin: 0;
+    }
+    
+    .filters-section {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    
+    .filters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        align-items: end;
+    }
+    
+    .filter-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: #374151;
+    }
+    
+    .filter-group input,
+    .filter-group select {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 0.875rem;
+    }
+    
+    .btn-filter {
+        background: #1e3a8a;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+    }
+    
+    .btn-filter:hover {
+        background: #1e40af;
+    }
+    
+    .btn-export {
+        background: #059669;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-block;
+    }
+    
+    .btn-export:hover {
+        background: #047857;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .invoices-table {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .table-header {
+        background: #f8fafc;
+        padding: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: between;
+        align-items: center;
+    }
+    
+    .table-header h2 {
+        margin: 0;
+        color: #1f2937;
+    }
+    
+    .table-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+    }
+    
+    .invoices-table table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .invoices-table th,
+    .invoices-table td {
+        padding: 0.75rem 1rem;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .invoices-table th {
+        background: #f9fafb;
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.875rem;
+    }
+    
+    .invoices-table tr:hover {
+        background: #f9fafb;
+    }
+    
+    .invoice-number {
+        font-weight: 600;
+        color: #1e3a8a;
+    }
+    
+    .amount {
+        font-weight: 600;
+        color: #059669;
+    }
+    
+    .commission {
+        color: #dc2626;
+    }
+    
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+        gap: 0.5rem;
+    }
+    
+    .pagination a,
+    .pagination span {
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        text-decoration: none;
+        color: #374151;
+    }
+    
+    .pagination .current {
+        background: #1e3a8a;
+        color: white;
+        border-color: #1e3a8a;
+    }
+    
+    .pagination a:hover {
+        background: #f3f4f6;
+    }
+    
+    .no-invoices {
+        text-align: center;
+        padding: 3rem;
+        color: #6b7280;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Invoice Dashboard</h1>
+        <p class="text-gray-600">Manage and view all invoice records</p>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <h3>Total Revenue</h3>
+            <p class="value">₹{{ total_revenue }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Invoices</h3>
+            <p class="value">{{ total_invoices }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Amount</h3>
+            <p class="value">₹{{ total_amount }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Average Commission</h3>
+            <p class="value">₹{{ total_invoices|default:1|floatformat:2 }}</p>
+        </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="filters-section">
+        <form method="GET" class="filters-grid">
+            <div class="filter-group">
+                <label for="start_date">Start Date</label>
+                <input type="date" id="start_date" name="start_date" value="{{ filters.start_date|date:'Y-m-d' }}">
+            </div>
+            <div class="filter-group">
+                <label for="end_date">End Date</label>
+                <input type="date" id="end_date" name="end_date" value="{{ filters.end_date|date:'Y-m-d' }}">
+            </div>
+            <div class="filter-group">
+                <label for="event">Event</label>
+                <select id="event" name="event">
+                    <option value="">All Events</option>
+                    {% for event in events %}
+                    <option value="{{ event.id }}" {% if filters.event_id == event.id|stringformat:"s" %}selected{% endif %}>
+                        {{ event.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="search">Search</label>
+                <input type="text" id="search" name="search" placeholder="Invoice #, Ticket #, Email..." value="{{ filters.search_query }}">
+            </div>
+            <div class="filter-group">
+                <button type="submit" class="btn-filter">Apply Filters</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Invoices Table -->
+    <div class="invoices-table">
+        <div class="table-header">
+            <h2>Invoice Records</h2>
+            <div class="table-actions">
+                <a href="{% url 'export_invoices_csv' %}?{{ request.GET.urlencode }}" class="btn-export">
+                    📊 Export CSV
+                </a>
+                <a href="{% url 'invoice_analytics' %}" class="btn-export">
+                    📈 Analytics
+                </a>
+                <a href="{% url 'event_commission_management' %}" class="btn-export">
+                    ⚙️ Commission Settings
+                </a>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            {% if page_obj %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Event Name</th>
+                        <th>Ticket ID</th>
+                        <th>Customer</th>
+                        <th>Base Price</th>
+                        <th>Service Fee</th>
+                        <th>Total</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for invoice in page_obj %}
+                    <tr>
+                        <td>
+                            <span class="invoice-number">{{ invoice.invoice_number }}</span>
+                        </td>
+                        <td>{{ invoice.event.title }}</td>
+                        <td>{{ invoice.ticket.ticket_number }}</td>
+                        <td>{{ invoice.user.email }}</td>
+                        <td class="amount">₹{{ invoice.base_price }}</td>
+                        <td class="commission">₹{{ invoice.commission }}</td>
+                        <td class="amount">₹{{ invoice.total_price }}</td>
+                        <td>{{ invoice.created_at|date:"M j, Y H:i" }}</td>
+                        <td>
+                            <a href="{% url 'invoice_detail' invoice.id %}" class="text-blue-600 hover:text-blue-800">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="no-invoices">
+                <p class="text-xl mb-2">No invoices found</p>
+                <p>No invoice records match your current filters.</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page=1{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}">&laquo; First</a>
+                <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}">Previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}">Next</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.urlencode %}&{{ request.GET.urlencode }}{% endif %}">Last &raquo;</a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

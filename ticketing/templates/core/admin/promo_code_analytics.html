@@ -1,0 +1,388 @@
+{% extends 'core/admin/base_admin.html' %}
+{% load static %}
+
+{% block admin_content %}
+<!-- Page Header -->
+<div class="flex justify-between items-center mb-6">
+    <div>
+        <h2 class="text-2xl font-bold text-gray-900">Promo Code Analytics Dashboard</h2>
+        <p class="text-sm text-gray-500 mt-1">Comprehensive overview of all promotion codes across the platform</p>
+    </div>
+    <div>
+        <a href="{% url 'admin_promo_code_list' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+            Back to Promo Codes
+        </a>
+    </div>
+</div>
+
+{% if promo_codes %}
+    <!-- KPI Stats Overview -->
+    <div class="mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <!-- Active Promo Codes -->
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Total Promo Codes</h3>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold text-green-600">{{ promo_codes|length }}</div>
+                <div class="mt-2 text-sm text-gray-500">
+                    {% with active_count=promo_codes|length %}
+                    Active: {{ active_count }} / Total: {{ promo_codes|length }}
+                    {% endwith %}
+                </div>
+            </div>
+
+            <!-- Total Discount Given -->
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 4a1 1 0 000 2h6a1 1 0 100-2H7zm1 5a1 1 0 011-1h4a1 1 0 110 2h-4a1 1 0 01-1-1zm0 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Total Discount Given</h3>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold text-purple-600">
+                    ₹{{ promo_codes|dictsortreversed:"amount_saved"|first.amount_saved|default:"0"|floatformat:2 }}
+                </div>
+                <div class="mt-2 text-sm text-gray-500">Across all promotions</div>
+            </div>
+
+            <!-- Total Revenue Through Promos -->
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z" />
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Revenue Through Promos</h3>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold text-blue-600">
+                    ₹{{ promo_codes|dictsortreversed:"revenue_generated"|first.revenue_generated|default:"0"|floatformat:2 }}
+                </div>
+                <div class="mt-2 text-sm text-gray-500">From promo code usage</div>
+            </div>
+
+            <!-- Avg Redemption Rate -->
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
+                        <svg class="w-6 h-6 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z" />
+                            <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z" />
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-semibold text-gray-900">Average Redemption</h3>
+                    </div>
+                </div>
+                <div class="text-3xl font-bold text-orange-600">
+                    {{ promo_codes|dictsortreversed:"redemption_rate"|first.redemption_rate|default:"0"|floatformat:1 }}%
+                </div>
+                <div class="mt-2 text-sm text-gray-500">Across all promo codes</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 mb-8">
+        <h2 class="text-xl font-bold text-gray-900 mb-4">Search & Filter Promo Codes</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+                <label for="promo-search" class="block text-sm font-medium text-gray-700 mb-1">Search by Code</label>
+                <input type="text" id="promo-search" class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter promo code...">
+            </div>
+            
+            <div>
+                <label for="event-filter" class="block text-sm font-medium text-gray-700 mb-1">Filter by Event</label>
+                <select id="event-filter" class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">All Events</option>
+                    {% for code in promo_codes %}
+                        <option value="{{ code.event.id }}">{{ code.event.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div>
+                <label for="status-filter" class="block text-sm font-medium text-gray-700 mb-1">Filter by Status</label>
+                <select id="status-filter" class="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">All Statuses</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="expired">Expired</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Promo Code Listing with Enhanced Details -->
+    <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 mb-8 overflow-hidden">
+        <h2 class="text-xl font-bold text-gray-900 mb-6">Promo Code Performance</h2>
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full table-auto" id="promo-codes-table">
+                <thead>
+                    <tr class="bg-gray-50 text-gray-600 text-sm uppercase tracking-wider">
+                        <th class="px-6 py-3 text-left">Code</th>
+                        <th class="px-6 py-3 text-left">Event</th>
+                        <th class="px-6 py-3 text-left">Type</th>
+                        <th class="px-6 py-3 text-left">Value</th>
+                        <th class="px-6 py-3 text-left">Usage</th>
+                        <th class="px-6 py-3 text-left">Tickets</th>
+                        <th class="px-6 py-3 text-left">Savings</th>
+                        <th class="px-6 py-3 text-left">Revenue</th>
+                        <th class="px-6 py-3 text-left">Redemption</th>
+                        <th class="px-6 py-3 text-left">Avg Order</th>
+                        <th class="px-6 py-3 text-left">Status</th>
+                        <th class="px-6 py-3 text-left">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for code in promo_codes %}
+                    <tr class="border-b hover:bg-gray-50 promo-code-row" data-event="{{ code.event.id }}" data-code="{{ code.code|lower }}" data-status="{% if code.is_active %}active{% else %}inactive{% endif %}{% if not code.is_valid %}expired{% endif %}">
+                        <td class="px-6 py-4 whitespace-nowrap font-medium text-blue-600">{{ code.code }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ code.event.title }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ code.get_discount_type_display }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if code.discount_type == 'PERCENTAGE' %}
+                                {{ code.discount_value }}%
+                            {% else %}
+                                ₹{{ code.discount_value }}
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <span class="mr-2">{{ code.current_uses }}/{% if code.max_uses == 0 %}∞{% else %}{{ code.max_uses }}{% endif %}</span>
+                                {% if code.max_uses > 0 %}
+                                <div class="w-16 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-500 h-2 rounded-full" style="width: {{ code.redemption_rate|floatformat:0 }}%"></div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ code.tickets_booked }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-green-600 font-medium">₹{{ code.amount_saved|floatformat:2 }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-blue-600 font-medium">₹{{ code.revenue_generated|floatformat:2 }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <span class="mr-2">{{ code.redemption_rate|floatformat:1 }}%</span>
+                                <div class="w-16 bg-gray-200 rounded-full h-2">
+                                    <div class="bg-orange-500 h-2 rounded-full" style="width: {{ code.redemption_rate|floatformat:0 }}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">₹{{ code.average_order_value|floatformat:2 }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            {% if code.is_active and code.is_valid %}
+                                <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Active</span>
+                            {% elif code.is_active and not code.is_valid %}
+                                <span class="px-2 py-1 text-xs rounded-full bg-orange-100 text-orange-800">Expired</span>
+                            {% else %}
+                                <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">Inactive</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <a href="{% url 'admin_edit_promo_code' code_id=code.id %}" class="text-blue-600 hover:text-blue-800">Edit</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Data Visualizations -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Top Performing Promo Codes Chart -->
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Top Performing Promo Codes by Revenue</h3>
+            <div id="top-promo-codes-chart" style="height: 300px;"></div>
+        </div>
+        
+        <!-- Redemption Rate Distribution Chart -->
+        <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Discount vs Revenue by Promo Code</h3>
+            <div id="discount-revenue-chart" style="height: 300px;"></div>
+        </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Filter functionality
+        const promoSearch = document.getElementById('promo-search');
+        const eventFilter = document.getElementById('event-filter');
+        const statusFilter = document.getElementById('status-filter');
+        const promoRows = document.querySelectorAll('.promo-code-row');
+        
+        function filterTable() {
+            const searchTerm = promoSearch.value.toLowerCase();
+            const eventId = eventFilter.value;
+            const status = statusFilter.value;
+            
+            promoRows.forEach(row => {
+                const codeMatches = row.dataset.code.includes(searchTerm);
+                const eventMatches = !eventId || row.dataset.event === eventId;
+                const statusMatches = !status || row.dataset.status === status;
+                
+                if (codeMatches && eventMatches && statusMatches) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        promoSearch.addEventListener('input', filterTable);
+        eventFilter.addEventListener('change', filterTable);
+        statusFilter.addEventListener('change', filterTable);
+        
+        // Chart data preparation
+        const promoLabels = [{% for code in promo_codes|slice:":10" %}'{{ code.code }}',{% endfor %}];
+        const revenueData = [{% for code in promo_codes|slice:":10" %}{{ code.revenue_generated|floatformat:2 }},{% endfor %}];
+        const savingsData = [{% for code in promo_codes|slice:":10" %}{{ code.amount_saved|floatformat:2 }},{% endfor %}];
+        
+        // Top Performing Promo Codes Chart
+        if(document.getElementById('top-promo-codes-chart')) {
+            const options = {
+                series: [{
+                    name: 'Revenue',
+                    data: revenueData
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 300,
+                    toolbar: {
+                        show: false
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        borderRadius: 4,
+                    },
+                },
+                colors: ['#3b82f6'],
+                dataLabels: {
+                    enabled: false
+                },
+                xaxis: {
+                    categories: promoLabels,
+                    labels: {
+                        style: {
+                            fontFamily: 'Inter, sans-serif'
+                        }
+                    }
+                },
+                yaxis: {
+                    title: {
+                        text: 'Revenue (₹)'
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return "₹" + val
+                        }
+                    }
+                }
+            };
+            
+            const chart = new ApexCharts(document.getElementById("top-promo-codes-chart"), options);
+            chart.render();
+        }
+        
+        // Discount vs Revenue Chart
+        if(document.getElementById('discount-revenue-chart')) {
+            const options = {
+                series: [{
+                    name: 'Revenue',
+                    data: revenueData
+                }, {
+                    name: 'Discount',
+                    data: savingsData
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 300,
+                    toolbar: {
+                        show: false
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        columnWidth: '55%',
+                        borderRadius: 4,
+                    },
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                colors: ['#3b82f6', '#10b981'],
+                xaxis: {
+                    categories: promoLabels,
+                    labels: {
+                        style: {
+                            fontFamily: 'Inter, sans-serif'
+                        }
+                    }
+                },
+                yaxis: {
+                    title: {
+                        text: 'Amount (₹)'
+                    }
+                },
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return "₹" + val
+                        }
+                    }
+                },
+                legend: {
+                    position: 'top'
+                }
+            };
+            
+            const chart = new ApexCharts(document.getElementById("discount-revenue-chart"), options);
+            chart.render();
+        }
+    });
+</script>
+{% else %}
+<div class="bg-white rounded-xl shadow-lg p-8 text-center">
+    <svg class="w-16 h-16 text-gray-400 mx-auto mb-4" fill="currentColor" viewBox="0 0 20 20">
+        <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zm7-10a1 1 0 01.707.293l.707.707L15.414 5a1 1 0 01-1.414 1.414L13 5.414V17a1 1 0 11-2 0V5.414L9.707 6.707a1 1 0 01-1.414-1.414l2-2A1 1 0 0112 2z" clip-rule="evenodd" />
+    </svg>
+    <h2 class="text-2xl font-bold text-gray-700 mb-2">No Promo Codes Found</h2>
+    <p class="text-gray-600 mb-6">There are no promo codes in the system yet.</p>
+    <a href="{% url 'admin_create_promo_code' %}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700">
+        Create Your First Promo Code
+    </a>
+</div>
+{% endif %}
+{% endblock %}

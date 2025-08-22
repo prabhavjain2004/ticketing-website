@@ -1,0 +1,396 @@
+{% extends 'base.html' %}
+{% load ticketing_extras %}
+
+{% block title %}{{ event.title }} - TapNex's Ticketing System{% endblock %}
+
+{% block content %}
+<!-- Hero Section with Event Banner -->
+<div class="relative min-h-screen bg-gradient-to-br from-tapnex-blue via-tapnex-light to-tapnex-accent">
+    <!-- Background Pattern Overlay -->
+    <div class="absolute inset-0 bg-black/10"></div>
+    <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <!-- Messages -->
+        {% if messages %}
+        <div class="mb-8 animate-fade-in">
+            {% for message in messages %}
+            <div class="p-4 rounded-2xl backdrop-blur-sm border {% if message.tags == 'error' %}bg-red-100/80 text-red-700 border-red-200{% else %}bg-green-100/80 text-green-700 border-green-200{% endif %}">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                        {% if message.tags == 'error' %}
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        {% else %}
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        {% endif %}
+                    </svg>
+                    {{ message }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Event Hero Card -->
+        <div class="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-slide-up">
+            {% if event.banner_image_url %}
+                <div class="relative h-96">
+                    {% google_drive_image event.banner_image_url event.title "w-full h-full object-cover" %}
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                    <div class="absolute bottom-6 left-6 text-white">
+                        <div class="flex items-center mb-2">
+                            <div class="w-3 h-3 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+                            <span class="text-sm font-medium">LIVE EVENT</span>
+                        </div>
+                    </div>
+                </div>
+            {% elif event.banner_image %}
+                <div class="relative h-96">
+                    <img src="{{ event.banner_image.url }}" alt="{{ event.title }}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                </div>
+            {% else %}
+                <div class="h-64 bg-gradient-to-r from-tapnex-blue to-tapnex-light flex items-center justify-center">
+                    <div class="text-center text-white">
+                        <svg class="w-20 h-20 mx-auto mb-4 opacity-80" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"/>
+                        </svg>
+                        <p class="text-lg font-medium">Event Image</p>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <div class="p-8 lg:p-12">
+                <!-- Event Title and Quick Info -->
+                <div class="mb-8">
+                    <h1 class="text-4xl lg:text-5xl font-black text-gray-900 mb-4 animate-fade-in">{{ event.title }}</h1>
+                    <div class="flex flex-wrap items-center gap-4 text-tapnex-dark">
+                        <div class="flex items-center bg-tapnex-gray px-4 py-2 rounded-full">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="font-medium">{{ event.date }} {% if event.end_date %}- {{ event.end_date }}{% endif %}</span>
+                        </div>
+                        <div class="flex items-center bg-tapnex-gray px-4 py-2 rounded-full">
+                            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                            </svg>
+                            <span class="font-medium">{{ event.venue }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 mt-12">
+                    <!-- Event Description -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8 mb-8">
+                            <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+                                <svg class="w-8 h-8 mr-3 text-tapnex-blue" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 13V5a2 2 0 00-2-2H4a2 2 0 00-2 2v8a2 2 0 002 2h3l3 3 3-3h3a2 2 0 002-2zM5 7a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1zm1 3a1 1 0 100 2h3a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                </svg>
+                                About This Event
+                            </h2>
+                            <div class="prose prose-lg max-w-none text-gray-700 leading-relaxed">
+                                {{ event.description|linebreaks }}
+                            </div>
+                        </div>
+                        
+                        <!-- Event Details Card -->
+                        <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
+                            <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center">
+                                <svg class="w-8 h-8 mr-3 text-tapnex-blue" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                </svg>
+                                Event Details
+                            </h2>
+                            <div class="space-y-6">
+                                <div class="flex items-start space-x-4 p-4 bg-tapnex-gray rounded-xl">
+                                    <div class="flex-shrink-0">
+                                        <div class="w-12 h-12 bg-tapnex-blue rounded-full flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">Date & Time</h3>
+                                        <p class="text-gray-600">{{ event.date }} {% if event.end_date %}- {{ event.end_date }}{% endif %}</p>
+                                        <p class="text-gray-600">{{ event.time }} {% if event.end_time %}- {{ event.end_time }}{% endif %}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-start space-x-4 p-4 bg-tapnex-gray rounded-xl">
+                                    <div class="flex-shrink-0">
+                                        <div class="w-12 h-12 bg-tapnex-accent rounded-full flex items-center justify-center">
+                                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900">Location</h3>
+                                        <p class="text-gray-600">{{ event.venue }}</p>
+                                        {% if event.venue_address %}
+                                        <p class="text-gray-600">{{ event.venue_address }}</p>
+                                        {% endif %}
+                                        {% if event.venue_map_link %}
+                                        <a href="{{ event.venue_map_link }}" target="_blank" class="inline-flex items-center text-tapnex-blue hover:text-tapnex-dark mt-2 font-medium">
+                                            View on Map
+                                            <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M11 3a1 1 0 100 2h2.586l-6.293 6.293a1 1 0 101.414 1.414L15 6.414V9a1 1 0 102 0V4a1 1 0 00-1-1h-5z"/>
+                                                <path d="M5 5a2 2 0 00-2 2v8a2 2 0 002 2h8a2 2 0 002-2v-3a1 1 0 10-2 0v3H5V7h3a1 1 0 000-2H5z"/>
+                                            </svg>
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ticket Booking Sidebar -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-8 sticky top-8">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                                <svg class="w-7 h-7 mr-3 text-tapnex-blue" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v2a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z"/>
+                                </svg>
+                                Ticket Information
+                            </h2>
+                            
+                            <div class="space-y-4 mb-8">
+                                {% for ticket_info in ticket_types %}
+                                <div class="bg-gradient-to-r from-tapnex-gray to-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300">
+                                    <div class="flex justify-between items-start mb-3">
+                                        <span class="font-bold text-lg text-gray-900">{{ ticket_info.type.type_name }}</span>
+                                        <span class="text-2xl font-black text-tapnex-blue">₹{{ ticket_info.type.price }}</span>
+                                    </div>
+                                    <p class="text-gray-600 text-sm mb-3">{{ ticket_info.type.description }}</p>
+                                    <div class="flex items-center justify-between text-sm">
+                                        <span class="text-gray-600">{{ ticket_info.type.attendees_per_ticket }} attendee(s)</span>
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium {% if ticket_info.available_count == 0 %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+                                            {% if ticket_info.available_count == 0 %}
+                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Sold Out
+                                            {% else %}
+                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                                </svg>
+                                                Available
+                                            {% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                
+                                {% if event.registration_deadline %}
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+                                    <div class="flex items-center">
+                                        <svg class="w-5 h-5 text-yellow-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <div>
+                                            <p class="text-sm font-medium text-yellow-800">Registration Deadline</p>
+                                            <p class="text-sm text-yellow-700">{{ event.registration_deadline }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Book Tickets CTA -->
+                            {% if not user.is_authenticated %}
+                            <div class="space-y-4">
+                                <div class="text-center">
+                                    <p class="text-gray-600 mb-4">Please log in to book tickets</p>
+                                </div>
+                                <a href="{% url 'login' %}?next={{ request.path }}" 
+                                   class="block w-full text-center bg-gradient-to-r from-tapnex-blue to-tapnex-light text-white py-4 px-6 rounded-xl hover:from-tapnex-dark hover:to-tapnex-blue transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                                    Login to Book Tickets
+                                </a>
+                                <a href="{% url 'signup' %}?next={{ request.path }}" 
+                                   class="block w-full text-center bg-white border-2 border-tapnex-blue text-tapnex-blue py-3 px-6 rounded-xl hover:bg-tapnex-blue hover:text-white transition-all duration-300 font-semibold">
+                                    Create Account
+                                </a>
+                            </div>
+                            {% else %}
+                                <a href="{% url 'book_ticket' event.id %}" 
+                                   class="block w-full text-center bg-gradient-to-r from-tapnex-blue to-tapnex-light text-white py-4 px-6 rounded-xl hover:from-tapnex-dark hover:to-tapnex-blue transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 animate-bounce">
+                                    <svg class="w-6 h-6 inline mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    Book Tickets Now
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Event Sponsors Section -->
+                {% if event.sponsors.exists %}
+                <div class="mt-16">
+                    <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-8">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-8 text-center flex items-center justify-center">
+                            <svg class="w-8 h-8 mr-3 text-tapnex-blue" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Event Partners
+                        </h2>
+                        {% with sponsor_count=event.sponsors.all|length %}
+                        <div class="sponsors-grid gap-8 items-center justify-center
+                                  {% if sponsor_count == 1 %}grid grid-cols-1 max-w-xs mx-auto
+                                  {% elif sponsor_count == 2 %}grid grid-cols-1 sm:grid-cols-2 max-w-2xl mx-auto
+                                  {% elif sponsor_count == 3 %}grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 max-w-4xl mx-auto
+                                  {% elif sponsor_count == 4 %}grid grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto
+                                  {% elif sponsor_count == 5 %}grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 max-w-6xl mx-auto
+                                  {% elif sponsor_count == 6 %}grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 max-w-7xl mx-auto
+                                  {% else %}grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6{% endif %}">
+                            {% for sponsor in event.sponsors.all %}
+                            <div class="text-center group transform hover:scale-105 transition-all duration-300">
+                                {% if sponsor.website_url %}
+                                    <a href="{{ sponsor.website_url }}" target="_blank" rel="noopener" class="block hover:opacity-75 transition-all duration-300">
+                                        <div class="bg-white p-6 rounded-xl shadow-md group-hover:shadow-xl transition-all duration-300 border border-gray-100">
+                                            {% if sponsor.logo_url %}
+                                                {% google_drive_image sponsor.logo_url sponsor.sponsor_name "h-16 w-auto mx-auto object-contain" %}
+                                            {% else %}
+                                                <div class="h-16 w-24 mx-auto bg-gray-200 rounded flex items-center justify-center">
+                                                    <span class="text-xs text-gray-500 text-center font-medium">{{ sponsor.sponsor_name }}</span>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <p class="text-sm font-medium text-gray-900 mt-3 group-hover:text-tapnex-blue transition-colors duration-300">{{ sponsor.sponsor_name }}</p>
+                                        {% if sponsor.sponsor_type %}
+                                            <p class="text-xs text-tapnex-blue font-medium opacity-75">{{ sponsor.sponsor_type }}</p>
+                                        {% endif %}
+                                    </a>
+                                {% else %}
+                                    <div class="block">
+                                        <div class="bg-white p-6 rounded-xl shadow-md group-hover:shadow-xl transition-all duration-300 border border-gray-100">
+                                            {% if sponsor.logo_url %}
+                                                {% google_drive_image sponsor.logo_url sponsor.sponsor_name "h-16 w-auto mx-auto object-contain" %}
+                                            {% else %}
+                                                <div class="h-16 w-24 mx-auto bg-gray-200 rounded flex items-center justify-center">
+                                                    <span class="text-xs text-gray-500 text-center font-medium">{{ sponsor.sponsor_name }}</span>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <p class="text-sm font-medium text-gray-900 mt-3">{{ sponsor.sponsor_name }}</p>
+                                        {% if sponsor.sponsor_type %}
+                                            <p class="text-xs text-tapnex-blue font-medium opacity-75">{{ sponsor.sponsor_type }}</p>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endwith %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Back to Events Link -->
+        <div class="mt-12 text-center animate-fade-in">
+            <a href="{% url 'event_list' %}" class="inline-flex items-center px-8 py-4 bg-white/80 backdrop-blur-sm text-tapnex-blue border-2 border-tapnex-blue rounded-xl hover:bg-tapnex-blue hover:text-white transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
+                </svg>
+                Back to All Events
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Custom TailwindCSS Configuration -->
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'tapnex-blue': '#1e40af',
+                    'tapnex-light': '#3b82f6', 
+                    'tapnex-dark': '#1e3a8a',
+                    'tapnex-accent': '#06b6d4',
+                    'tapnex-gray': '#f8fafc'
+                },
+                animation: {
+                    'fade-in': 'fadeIn 0.8s ease-out',
+                    'slide-up': 'slideUp 0.8s ease-out',
+                    'bounce': 'bounce 2s infinite'
+                },
+                keyframes: {
+                    fadeIn: {
+                        '0%': { opacity: '0' },
+                        '100%': { opacity: '1' }
+                    },
+                    slideUp: {
+                        '0%': { opacity: '0', transform: 'translateY(30px)' },
+                        '100%': { opacity: '1', transform: 'translateY(0)' }
+                    }
+                }
+            }
+        }
+    }
+
+    // Additional CSS for sponsor grid optimization
+    const style = document.createElement('style');
+    style.textContent = `
+        .sponsors-grid {
+            place-items: center;
+        }
+        
+        /* Responsive adjustments for sponsors */
+        @media (max-width: 640px) {
+            .sponsors-grid > div {
+                max-width: 200px;
+                margin: 0 auto;
+            }
+        }
+        
+        @media (min-width: 641px) and (max-width: 768px) {
+            .sponsors-grid > div {
+                max-width: 180px;
+            }
+        }
+        
+        @media (min-width: 769px) {
+            .sponsors-grid > div {
+                max-width: 160px;
+            }
+        }
+        
+        /* Ensure equal spacing for sponsors */
+        .sponsors-grid.grid-cols-1 > div {
+            max-width: 240px;
+        }
+        
+        .sponsors-grid.sm\\:grid-cols-2 > div {
+            max-width: 200px;
+        }
+        
+        .sponsors-grid.lg\\:grid-cols-3 > div {
+            max-width: 180px;
+        }
+        
+        .sponsors-grid.lg\\:grid-cols-4 > div {
+            max-width: 160px;
+        }
+        
+        .sponsors-grid.lg\\:grid-cols-5 > div {
+            max-width: 140px;
+        }
+        
+        .sponsors-grid.lg\\:grid-cols-6 > div {
+            max-width: 120px;
+        }
+    `;
+    document.head.appendChild(style);
+</script>
+{% endblock %}
+
+{% block extra_js %}
+{% endblock %}

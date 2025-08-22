@@ -1,0 +1,35 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "tapnex_ticketing_system/wsgi.py",
+      "use": "@vercel/python",
+      "config": { 
+        "maxLambdaSize": "15mb"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/staticfiles_build/$1",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000"
+      }
+    },
+    {
+      "src": "/media/(.*)",
+      "dest": "/media/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "tapnex_ticketing_system/wsgi.py"
+    }
+  ],
+  "env": {
+    "DJANGO_SETTINGS_MODULE": "tapnex_ticketing_system.settings",
+    "DEBUG": "False",
+    "ALLOWED_HOSTS": "tickets.tapnex.tech,ticketing-website-o9431afou-prabhav-jains-projects.vercel.app",
+    "CASHFREE_ENVIRONMENT": "PRODUCTION"
+  }
+}

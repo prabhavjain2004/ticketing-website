@@ -1,0 +1,293 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Invoice {{ invoice.invoice_number }} - TapNex{% endblock %}
+
+{% block extra_css %}
+<style>
+    .invoice-detail {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .invoice-header {
+        background: #1e3a8a;
+        color: white;
+        padding: 2rem;
+        text-align: center;
+    }
+    
+    .invoice-header h1 {
+        margin: 0 0 0.5rem 0;
+        font-size: 2rem;
+    }
+    
+    .invoice-header p {
+        margin: 0;
+        opacity: 0.9;
+    }
+    
+    .invoice-content {
+        padding: 2rem;
+    }
+    
+    .section {
+        margin-bottom: 2rem;
+    }
+    
+    .section h3 {
+        color: #1e3a8a;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .info-item {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .info-label {
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .info-value {
+        color: #1f2937;
+        font-size: 1rem;
+    }
+    
+    .pricing-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+    }
+    
+    .pricing-table th,
+    .pricing-table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .pricing-table th {
+        background: #f9fafb;
+        font-weight: 600;
+        color: #374151;
+    }
+    
+    .pricing-table .total-row {
+        background: #f3f4f6;
+        font-weight: bold;
+        font-size: 1.1em;
+    }
+    
+    .amount {
+        font-weight: 600;
+        color: #059669;
+    }
+    
+    .commission {
+        color: #dc2626;
+    }
+    
+    .actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #e5e7eb;
+    }
+    
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .btn-primary {
+        background: #1e3a8a;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: #1e40af;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-secondary {
+        background: #6b7280;
+        color: white;
+    }
+    
+    .btn-secondary:hover {
+        background: #4b5563;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-success {
+        background: #059669;
+        color: white;
+    }
+    
+    .btn-success:hover {
+        background: #047857;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #6b7280;
+        text-decoration: none;
+        margin-bottom: 1rem;
+    }
+    
+    .back-link:hover {
+        color: #374151;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <a href="{% url 'invoice_dashboard' %}" class="back-link">
+        ← Back to Invoice Dashboard
+    </a>
+
+    <div class="invoice-detail">
+        <div class="invoice-header">
+            <h1>Invoice {{ invoice.invoice_number }}</h1>
+            <p>Generated on {{ invoice.created_at|date:"F j, Y" }}</p>
+        </div>
+
+        <div class="invoice-content">
+            <!-- Event and Ticket Information -->
+            <div class="section">
+                <h3>Event & Ticket Details</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Event Name</span>
+                        <span class="info-value">{{ invoice.event.title }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Ticket ID</span>
+                        <span class="info-value">{{ invoice.ticket.ticket_number }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Ticket Type</span>
+                        <span class="info-value">{{ invoice.ticket_type.type_name }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Event Date</span>
+                        <span class="info-value">{{ invoice.event.date|date:"F j, Y" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Information -->
+            <div class="section">
+                <h3>Customer Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Customer Email</span>
+                        <span class="info-value">{{ invoice.user.email }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Customer Name</span>
+                        <span class="info-value">{{ invoice.user.get_full_name|default:"Not provided" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Purchase Date</span>
+                        <span class="info-value">{{ invoice.created_at|date:"F j, Y g:i A" }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pricing Breakdown -->
+            <div class="section">
+                <h3>Pricing Breakdown</h3>
+                <table class="pricing-table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th style="text-align: right;">Amount (₹)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Base Ticket Price</td>
+                            <td style="text-align: right;" class="amount">₹{{ invoice.base_price }}</td>
+                        </tr>
+                        <tr>
+                            <td>TapNex Service Fee</td>
+                            <td style="text-align: right;" class="commission">₹{{ invoice.commission }}</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td>Total Amount</td>
+                            <td style="text-align: right;" class="amount">₹{{ invoice.total_price }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Transaction Information -->
+            <div class="section">
+                <h3>Transaction Details</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Transaction ID</span>
+                        <span class="info-value">{{ invoice.transaction.transaction_id|default:"N/A" }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Order ID</span>
+                        <span class="info-value">{{ invoice.transaction.order_id }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Payment Gateway</span>
+                        <span class="info-value">{{ invoice.transaction.payment_gateway }}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Payment Status</span>
+                        <span class="info-value">{{ invoice.transaction.get_status_display }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="actions">
+                <a href="{% url 'invoice_dashboard' %}" class="btn btn-secondary">
+                    ← Back to Dashboard
+                </a>
+                <a href="{% url 'export_invoices_csv' %}?invoice_id={{ invoice.id }}" class="btn btn-success">
+                    📊 Export CSV
+                </a>
+                <a href="#" onclick="window.print()" class="btn btn-primary">
+                    🖨️ Print Invoice
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Ticket for {{ event_name }}</title>
+</head>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; text-align: center; background-color: #f0f2f5; padding: 20px; margin: 0;">
+    <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+        <h1 style="color: #1c1e21; font-size: 28px; font-weight: 700;">Your Pass is Ready!</h1>
+        <p style="color: #555; font-size: 16px; line-height: 1.6;">Thank you for your purchase for **{{ event_name }}**. Your personalized event pass is now available online.</p>
+        <p style="color: #555; font-size: 16px; line-height: 1.6;">Click the button below to view and save your ticket. You will need to show it at the event entrance.</p>
+        <a href="{{ ticket_url }}" target="_blank" style="display: inline-block; background-color: #1a8fe3; color: #ffffff; padding: 14px 28px; margin: 30px 0; border-radius: 8px; text-decoration: none; font-size: 18px; font-weight: 600;">
+            View Your Event Pass
+        </a>
+        <hr style="border: none; border-top: 1px solid #e5e5e5; margin: 20px 0;">
+        <p style="color: #888; font-size: 12px;">If the button doesn't work, you can copy and paste this link into your browser:<br><a href="{{ ticket_url }}" style="color: #1a8fe3; text-decoration: none;">{{ ticket_url }}</a></p>
+    </div>
+</body>
+</html>

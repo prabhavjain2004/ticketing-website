@@ -1,0 +1,237 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Error - TapNex</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="{% static 'images/logos/TAPNEX_LOGO_BG.jpg' %}">
+    <link rel="shortcut icon" type="image/jpeg" href="{% static 'images/logos/TAPNEX_LOGO_BG.jpg' %}">
+    <link rel="apple-touch-icon" href="{% static 'images/logos/TAPNEX_LOGO_BG.jpg' %}">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tapnex-blue': '#1e40af',
+                        'tapnex-light': '#3b82f6',
+                        'tapnex-dark': '#1e3a8a',
+                        'tapnex-accent': '#06b6d4',
+                        'tapnex-gray': '#f8fafc'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'bounce-subtle': 'bounceSubtle 2s infinite',
+                        'pulse-slow': 'pulse 3s infinite'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        bounceSubtle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-sm border-b border-white/20 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-4">
+                    <img src="{% static 'images/logos/TAPNEX_LOGO_BG.jpg' %}" alt="TapNex Logo" class="h-10 w-10 rounded-full object-cover shadow-lg border-2 border-white/20">
+                    <span class="text-2xl font-bold text-tapnex-blue">TapNex</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'home' %}" class="text-tapnex-blue hover:text-tapnex-dark transition-colors">
+                        <i class="fas fa-home mr-2"></i>Home
+                    </a>
+                    <a href="{% url 'contact' %}" class="text-tapnex-blue hover:text-tapnex-dark transition-colors">
+                        <i class="fas fa-envelope mr-2"></i>Contact
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-4xl w-full space-y-8">
+            <div class="text-center animate-fade-in">
+                <!-- 500 Icon -->
+                <div class="mb-8">
+                    <div class="relative inline-block">
+                        <div class="w-32 h-32 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center shadow-2xl animate-pulse-slow">
+                            <i class="fas fa-server text-white text-4xl"></i>
+                        </div>
+                        <div class="absolute -top-4 -right-4 w-16 h-16 bg-red-600 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-lg">
+                            500
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Error Message -->
+                <div class="space-y-6">
+                    <h1 class="text-6xl font-black text-gray-900 mb-4">
+                        Ouch!
+                    </h1>
+                    <h2 class="text-3xl font-bold text-red-600 mb-4">
+                        Server Error
+                    </h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+                        Something went wrong on our end. Our team has been notified and is working to fix this issue. 
+                        Please try again in a few minutes.
+                    </p>
+                </div>
+
+                <!-- Status Information -->
+                <div class="mt-12 max-w-2xl mx-auto">
+                    <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20">
+                        <div class="flex items-center justify-center space-x-4 mb-4">
+                            <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                            <span class="text-lg font-semibold text-gray-900">Service Status</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">
+                            We're experiencing technical difficulties. Our engineering team is actively working to resolve this issue.
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
+                            <div class="text-center p-3 bg-red-50 rounded-lg">
+                                <i class="fas fa-clock text-red-500 mb-2"></i>
+                                <p class="font-medium">Estimated Fix</p>
+                                <p class="text-gray-600">5-10 minutes</p>
+                            </div>
+                            <div class="text-center p-3 bg-yellow-50 rounded-lg">
+                                <i class="fas fa-users text-yellow-500 mb-2"></i>
+                                <p class="font-medium">Team Status</p>
+                                <p class="text-gray-600">Working on it</p>
+                            </div>
+                            <div class="text-center p-3 bg-green-50 rounded-lg">
+                                <i class="fas fa-bell text-green-500 mb-2"></i>
+                                <p class="font-medium">Notifications</p>
+                                <p class="text-gray-600">Enabled</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-12 space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
+                    <button onclick="window.location.reload()" class="inline-flex items-center px-8 py-4 border border-transparent text-lg font-medium rounded-xl text-white bg-tapnex-blue hover:bg-tapnex-dark transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                        <i class="fas fa-redo mr-3"></i>
+                        Try Again
+                    </button>
+                    <a href="{% url 'home' %}" class="inline-flex items-center px-8 py-4 border-2 border-tapnex-blue text-lg font-medium rounded-xl text-tapnex-blue bg-white hover:bg-tapnex-blue hover:text-white transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                        <i class="fas fa-home mr-3"></i>
+                        Go to Homepage
+                    </a>
+                </div>
+
+                <!-- Help Section -->
+                <div class="mt-16 max-w-4xl mx-auto">
+                    <div class="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-white/20">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">
+                            <i class="fas fa-life-ring mr-3 text-tapnex-blue"></i>
+                            Need Help?
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-4">
+                                <h4 class="text-lg font-semibold text-gray-900">
+                                    <i class="fas fa-question-circle text-tapnex-blue mr-2"></i>
+                                    What you can do:
+                                </h4>
+                                <ul class="space-y-2 text-gray-600">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                        <span>Wait a few minutes and try again</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                        <span>Clear your browser cache</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                        <span>Try a different browser</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-green-500 mr-2 mt-1"></i>
+                                        <span>Check your internet connection</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="space-y-4">
+                                <h4 class="text-lg font-semibold text-gray-900">
+                                    <i class="fas fa-headset text-tapnex-blue mr-2"></i>
+                                    Contact Support:
+                                </h4>
+                                <div class="space-y-3">
+                                    <a href="{% url 'contact' %}" class="flex items-center p-3 bg-tapnex-blue/10 rounded-lg hover:bg-tapnex-blue/20 transition-colors">
+                                        <i class="fas fa-envelope text-tapnex-blue mr-3"></i>
+                                        <span class="font-medium">Send us a message</span>
+                                    </a>
+                                    <div class="flex items-center p-3 bg-gray-100 rounded-lg">
+                                        <i class="fas fa-phone text-gray-500 mr-3"></i>
+                                        <span class="font-medium">Call: +1 (555) 123-4567</span>
+                                    </div>
+                                    <div class="flex items-center p-3 bg-gray-100 rounded-lg">
+                                        <i class="fas fa-clock text-gray-500 mr-3"></i>
+                                        <span class="font-medium">24/7 Support Available</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technical Details (for developers) -->
+                <div class="mt-12 max-w-2xl mx-auto">
+                    <details class="bg-gray-100/80 backdrop-blur-sm rounded-xl p-4">
+                        <summary class="cursor-pointer text-sm font-medium text-gray-700 hover:text-gray-900">
+                            <i class="fas fa-code mr-2"></i>
+                            Technical Details (for developers)
+                        </summary>
+                        <div class="mt-4 text-left text-sm text-gray-600 space-y-2">
+                            <p><strong>Error Code:</strong> 500 Internal Server Error</p>
+                            <p><strong>Timestamp:</strong> <span id="timestamp"></span></p>
+                            <p><strong>Request ID:</strong> <span id="request-id"></span></p>
+                            <p><strong>User Agent:</strong> <span id="user-agent"></span></p>
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white/80 backdrop-blur-sm border-t border-white/20 mt-20">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <div class="text-center text-gray-600">
+                <p>&copy; 2024 TapNex. All rights reserved.</p>
+                <p class="mt-2 text-sm">We apologize for the inconvenience. Thank you for your patience.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Fill in technical details
+        document.getElementById('timestamp').textContent = new Date().toISOString();
+        document.getElementById('request-id').textContent = Math.random().toString(36).substr(2, 9).toUpperCase();
+        document.getElementById('user-agent').textContent = navigator.userAgent.substring(0, 50) + '...';
+    </script>
+</body>
+</html>

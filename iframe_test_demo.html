@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iframe Parsing Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">Iframe URL Extraction Demo</h1>
+        
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Test the Iframe Parsing Functionality</h2>
+            
+            <!-- Test Input -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Paste iframe code or direct URL:
+                </label>
+                <textarea 
+                    id="sponsor-embed-input-test" 
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                    rows="4"
+                    placeholder="Paste your Google Drive iframe code or direct URL here..."
+                ></textarea>
+                <p class="text-xs text-gray-500 mt-1">
+                    You can paste either the iframe code or direct Google Drive URL
+                </p>
+            </div>
+            
+            <!-- Hidden input that would be submitted -->
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Extracted URL (this is what gets submitted):
+                </label>
+                <input 
+                    type="text" 
+                    id="sponsor-logo-url-final-test" 
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-50"
+                    readonly
+                    placeholder="Extracted URL will appear here..."
+                >
+            </div>
+            
+            <!-- Status indicator -->
+            <div id="url-extraction-status-test" class="text-xs mb-4"></div>
+            
+            <!-- Preview container -->
+            <div id="logo-preview-container-test" class="mt-3 hidden">
+                <p class="text-sm font-medium text-gray-700 mb-2">Preview:</p>
+                <img id="logo-preview-test" class="h-32 rounded-lg border border-gray-200 shadow-sm" src="" alt="Logo preview">
+            </div>
+            
+            <!-- Example iframe code for testing -->
+            <div class="mt-8 p-4 bg-blue-50 rounded-lg">
+                <h3 class="text-lg font-semibold text-blue-800 mb-2">Test Example</h3>
+                <p class="text-sm text-blue-700 mb-2">Copy and paste this example iframe code to test:</p>
+                <code class="block text-xs bg-white p-2 rounded border text-gray-700 break-all">
+&lt;iframe src="https://drive.google.com/file/d/1d5QaRjbjRitdxFTGm_V5SJvNdEjgEQIO/preview" width="640" height="480" allow="autoplay"&gt;&lt;/iframe&gt;
+                </code>
+                <p class="text-xs text-blue-600 mt-2">
+                    Expected extracted URL: https://drive.google.com/file/d/1d5QaRjbjRitdxFTGm_V5SJvNdEjgEQIO/preview
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function extractUrlFromInput(input) {
+            if (!input) return null;
+            
+            // First, check if it's an iframe
+            const iframeMatch = input.match(/<iframe[^>]*src="([^"]*)"[^>]*>/i);
+            if (iframeMatch) {
+                return iframeMatch[1]; // Return the src URL
+            }
+            
+            // If not iframe, check if it's a direct URL
+            const urlPattern = /https?:\/\/[^\s<>"]+/i;
+            const urlMatch = input.match(urlPattern);
+            if (urlMatch) {
+                return urlMatch[0];
+            }
+            
+            return null;
+        }
+        
+        function validateGoogleDriveUrl(url) {
+            const googleDrivePatterns = [
+                /drive\.google\.com\/file\/d\/([a-zA-Z0-9-_]+)/,
+                /drive\.google\.com\/open\?id=([a-zA-Z0-9-_]+)/,
+                /googleusercontent\.com/
+            ];
+            
+            return googleDrivePatterns.some(pattern => pattern.test(url));
+        }
+        
+        function extractFileId(url) {
+            const patterns = [
+                /\/d\/([a-zA-Z0-9-_]+)/,  // /file/d/FILE_ID/
+                /id=([a-zA-Z0-9-_]+)/,    // ?id=FILE_ID
+            ];
+            
+            for (const pattern of patterns) {
+                const match = url.match(pattern);
+                if (match) return match[1];
+            }
+            return null;
+        }
+        
+        function updatePreview(url) {
+            const previewContainer = document.getElementById('logo-preview-container-test');
+            const previewImage = document.getElementById('logo-preview-test');
+            
+            if (!url || !validateGoogleDriveUrl(url)) {
+                previewContainer.classList.add('hidden');
+                return;
+            }
+            
+            const fileId = extractFileId(url);
+            if (fileId) {
+                // Use the reliable LH3 URL format for preview
+                const previewUrl = `https://lh3.googleusercontent.com/d/${fileId}=w800`;
+                previewImage.src = previewUrl;
+                previewContainer.classList.remove('hidden');
+                
+                // Add error handling for failed image loads
+                previewImage.onerror = function() {
+                    // Try alternative preview URL if the first one fails
+                    this.src = `https://drive.google.com/thumbnail?id=${fileId}&sz=w800`;
+                    this.onerror = function() {
+                        // If both fail, hide the preview
+                        previewContainer.classList.add('hidden');
+                    };
+                };
+            }
+        }
+        
+        function processInput() {
+            const embedInput = document.getElementById('sponsor-embed-input-test');
+            const hiddenUrlInput = document.getElementById('sponsor-logo-url-final-test');
+            const statusElement = document.getElementById('url-extraction-status-test');
+            
+            const inputValue = embedInput.value.trim();
+            
+            if (!inputValue) {
+                hiddenUrlInput.value = '';
+                statusElement.innerHTML = '';
+                document.getElementById('logo-preview-container-test').classList.add('hidden');
+                return;
+            }
+            
+            const extractedUrl = extractUrlFromInput(inputValue);
+            
+            if (extractedUrl) {
+                if (validateGoogleDriveUrl(extractedUrl)) {
+                    hiddenUrlInput.value = extractedUrl;
+                    statusElement.innerHTML = '<span class="text-green-600">✅ URL extracted successfully</span>';
+                    updatePreview(extractedUrl);
+                } else {
+                    hiddenUrlInput.value = '';
+                    statusElement.innerHTML = '<span class="text-red-600">❌ Not a valid Google Drive URL</span>';
+                    document.getElementById('logo-preview-container-test').classList.add('hidden');
+                }
+            } else {
+                hiddenUrlInput.value = '';
+                statusElement.innerHTML = '<span class="text-red-600">❌ Could not extract URL from input</span>';
+                document.getElementById('logo-preview-container-test').classList.add('hidden');
+            }
+        }
+        
+        // Listen for input events
+        document.getElementById('sponsor-embed-input-test').addEventListener('input', processInput);
+        document.getElementById('sponsor-embed-input-test').addEventListener('paste', function() {
+            // Small delay to allow paste content to be processed
+            setTimeout(processInput, 100);
+        });
+        document.getElementById('sponsor-embed-input-test').addEventListener('blur', processInput);
+    </script>
+</body>
+</html>

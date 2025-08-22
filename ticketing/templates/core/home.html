@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load ticketing_extras %}
+
+{% block title %}Welcome to TapNex's Ticketing System{% endblock %}
+
+{% block content %}
+    <!-- Hero Section with Gradient Background -->
+    <div class="relative min-h-screen overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 bg-gradient-to-br from-tapnex-blue via-tapnex-light to-tapnex-accent opacity-5"></div>
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%236366f1" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"></div>
+        
+        <div class="relative max-w-7xl mx-auto py-20 px-4 sm:px-6 lg:px-8">
+            <!-- Hero Content -->
+            <div class="text-center mb-20 animate-slide-up">
+                <div class="flex justify-center mb-8">
+                    <div class="flex items-center space-x-8">
+                        <!-- TapNex Logo -->
+                        <div class="relative">
+                            {% google_drive_image "https://drive.google.com/file/d/1nu-W80HaCOhyw_UcEP_I55tTJuv2gNic/view?usp=sharing" "TapNex Logo" "h-24 w-24 rounded-full object-cover shadow-2xl border-4 border-white/20 backdrop-blur-sm animate-bounce-subtle" %}
+                            <div class="logo-fallback h-24 w-24 rounded-full bg-gradient-to-br from-tapnex-blue to-tapnex-accent flex items-center justify-center shadow-2xl border-4 border-white/20 backdrop-blur-sm animate-bounce-subtle" style="display: none;">
+                                <span class="text-white text-xl font-bold">TN</span>
+                            </div>
+                            <div class="absolute -inset-4 bg-gradient-to-r from-tapnex-accent/20 to-tapnex-blue/20 rounded-full blur-xl"></div>
+                        </div>
+                        <!-- Nexgen FC Logo -->
+                        {% comment %} <div class="relative">
+                            <img src="{% static 'images/logos/LOGO_NEXGEN_FC.png' %}" 
+                                 alt="Nexgen FC Logo" 
+                                 class="h-24 w-24 rounded-full object-cover shadow-2xl border-4 border-white/20 backdrop-blur-sm animate-bounce-subtle"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            <div class="logo-fallback h-24 w-24 rounded-full bg-gradient-to-br from-blue-600 to-green-600 flex items-center justify-center shadow-2xl border-4 border-white/20 backdrop-blur-sm animate-bounce-subtle" style="display: none;">
+                                <span class="text-white text-xl font-bold">NG</span>
+                            </div>
+                            <div class="absolute -inset-4 bg-gradient-to-r from-blue-500/20 to-green-500/20 rounded-full blur-xl"></div>
+                        </div> {% endcomment %}
+                    </div>
+                </div>
+                
+                <h1 class="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-tapnex-blue via-tapnex-light to-tapnex-accent mb-6">
+                    Welcome to TapNex
+                </h1>
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-700 mb-6">
+                    Ticketing System
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-12">
+                    Experience the future of event ticketing with our cutting-edge platform. Seamless booking, secure payments, and exceptional user experience - all in one place.
+                </p>
+                
+                <!-- CTA Buttons -->
+                {% if not user.is_authenticated %}
+                <div class="flex flex-col sm:flex-row justify-center gap-6 mb-16">
+                    <a href="{% url 'signup' %}" class="group relative bg-gradient-to-r from-tapnex-blue to-tapnex-light text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-2xl hover:shadow-3xl transform hover:scale-105 transition-all duration-300">
+                        <div class="absolute inset-0 bg-gradient-to-r from-tapnex-light to-tapnex-accent rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity"></div>
+                        <div class="relative flex items-center">
+                            <svg class="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                            </svg>
+                            Get Started Today
+                        </div>
+                    </a>
+                    <a href="{% url 'login' %}" class="group bg-white/90 backdrop-blur-sm text-tapnex-blue px-8 py-4 rounded-2xl font-bold text-lg border-2 border-tapnex-blue/20 shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 hover:bg-tapnex-blue hover:text-white">
+                        <div class="flex items-center">
+                            <svg class="w-6 h-6 mr-3 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                            </svg>
+                            Sign In
+                        </div>
+                    </a>
+                </div>
+                {% endif %}
+                
+            <!-- Events Section -->
+            {% if events %}
+            <div class="mb-20">
+                <div class="text-center mb-16">
+                    <h3 class="text-4xl font-bold text-gray-800 mb-4">Upcoming Events</h3>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">Discover amazing events happening near you. Book your tickets now and create unforgettable memories.</p>
+                </div>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    {% for event_data in events %}
+                    <div class="group bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transform hover:scale-105 transition-all duration-500">
+                        <!-- Event Image -->
+                        <div class="relative h-48 overflow-hidden">
+                            {% if event_data.event.banner_image_url %}
+                                {% google_drive_image event_data.event.banner_image_url event_data.event.title "w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" %}
+                            {% elif event_data.event.banner_image %}
+                                <img src="{{ event_data.event.banner_image.url }}" alt="{{ event_data.event.title }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            {% else %}
+                                <div class="w-full h-full bg-gradient-to-br from-tapnex-blue to-tapnex-accent flex items-center justify-center">
+                                    <svg class="w-16 h-16 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                            {% endif %}
+                            
+                            <!-- Price Badge -->
+                            {% if event_data.tickets_are_live %}
+                                {% if event_data.min_price %}
+                                <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-sm text-tapnex-blue px-3 py-2 rounded-xl font-bold text-sm shadow-lg">
+                                    From ₹{{ event_data.min_price|floatformat:0 }}
+                                </div>
+                                {% endif %}
+                            {% else %}
+                            <div class="absolute top-4 right-4 bg-orange-500/95 backdrop-blur-sm text-white px-3 py-2 rounded-xl font-bold text-sm shadow-lg">
+                                Tickets Live Soon
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Overlay -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        </div>
+                        
+                        <!-- Event Details -->
+                        <div class="p-6">
+                            <h4 class="text-xl font-bold text-gray-800 mb-3 group-hover:text-tapnex-blue transition-colors line-clamp-2">{{ event_data.event.title }}</h4>
+                            
+                            <div class="space-y-2 mb-4">
+                                <div class="flex items-center text-gray-600">
+                                    <svg class="w-4 h-4 mr-2 text-tapnex-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                    <span class="text-sm">{{ event_data.event.date|date:"M d, Y" }} at {{ event_data.event.time|time:"g:i A" }}</span>
+                                </div>
+                                <div class="flex items-center text-gray-600">
+                                    <svg class="w-4 h-4 mr-2 text-tapnex-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    </svg>
+                                    <span class="text-sm">{{ event_data.event.venue }}</span>
+                                </div>
+                            </div>
+                            
+                            <p class="text-gray-600 text-sm mb-6 line-clamp-2">{{ event_data.event.description|truncatewords:15 }}</p>
+                            
+                            <a href="{% url 'event_detail' event_data.event.id %}" class="w-full bg-gradient-to-r from-tapnex-blue to-tapnex-light text-white py-3 px-4 rounded-xl font-semibold text-center hover:shadow-lg transform hover:scale-105 transition-all duration-300 flex items-center justify-center group">
+                                <span>Book Now</span>
+                                <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="text-center mt-12">
+                    <a href="{% url 'event_list' %}" class="inline-flex items-center bg-white/90 backdrop-blur-sm text-tapnex-blue px-8 py-3 rounded-xl font-semibold border-2 border-tapnex-blue/20 hover:bg-tapnex-blue hover:text-white transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        <span>View All Events</span>
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            {% else %}
+
+            <!-- Features Section -->
+            <div class="mb-20">
+                <h3 class="text-4xl font-bold text-center text-gray-800 mb-16">Why Choose TapNex?</h3>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="group bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20 hover:shadow-2xl transform hover:scale-105 transition-all duration-500">
+                        <div class="bg-gradient-to-r from-tapnex-blue to-tapnex-light w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:rotate-12 transition-transform">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-2xl font-bold text-gray-800 mb-4">Lightning Fast</h4>
+                        <p class="text-gray-600 leading-relaxed">Experience blazing-fast ticket booking with our optimized platform. No more waiting, just seamless transactions in seconds.</p>
+                    </div>
+                    
+                    <div class="group bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20 hover:shadow-2xl transform hover:scale-105 transition-all duration-500">
+                        <div class="bg-gradient-to-r from-tapnex-accent to-tapnex-light w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:rotate-12 transition-transform">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-2xl font-bold text-gray-800 mb-4">Secure & Safe</h4>
+                        <p class="text-gray-600 leading-relaxed">Your data and payments are protected by enterprise-grade security. SSL encryption and secure payment gateways ensure peace of mind.</p>
+                    </div>
+                    
+                    <div class="group bg-white/80 backdrop-blur-sm rounded-3xl p-8 shadow-xl border border-white/20 hover:shadow-2xl transform hover:scale-105 transition-all duration-500">
+                        <div class="bg-gradient-to-r from-tapnex-blue to-tapnex-accent w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:rotate-12 transition-transform">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                            </svg>
+                        </div>
+                        <h4 class="text-2xl font-bold text-gray-800 mb-4">User Friendly</h4>
+                        <p class="text-gray-600 leading-relaxed">Intuitive design meets powerful functionality. Our user-centric approach ensures everyone can navigate and book tickets effortlessly.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- No Events State -->
+            <div class="text-center py-20">
+                <div class="max-w-md mx-auto">
+                    <div class="bg-gradient-to-r from-tapnex-blue/10 to-tapnex-accent/10 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-12 h-12 text-tapnex-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">No Events Available</h3>
+                    <p class="text-gray-600 mb-8">Check back soon for exciting upcoming events!</p>
+                    <a href="{% url 'event_list' %}" class="inline-flex items-center bg-tapnex-blue text-white px-6 py-3 rounded-xl font-semibold hover:bg-tapnex-dark transition-colors shadow-lg">
+                        <span>Browse Events</span>
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

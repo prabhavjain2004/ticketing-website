@@ -1,0 +1,359 @@
+{% extends 'base.html' %}
+{% load ticketing_extras %}
+
+{% block title %}Checkout - {{ event.title }} | TapNex Ticketing System{% endblock %}
+
+{% block content %}
+<!-- Checkout Hero Section -->
+<div class="min-h-screen bg-gradient-to-br from-tapnex-blue via-tapnex-light to-tapnex-accent py-16">
+    <!-- Background Pattern Overlay -->
+    <div class="absolute inset-0 bg-black/10"></div>
+    <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"></div>
+    
+    <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Checkout Card -->
+        <div class="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-white/20 overflow-hidden animate-slide-up">
+            <!-- Header -->
+            <div class="bg-gradient-to-r from-tapnex-blue to-tapnex-light px-8 py-6">
+                <div class="flex items-center justify-between">
+                    <h1 class="text-3xl font-black text-white">Secure Checkout</h1>
+                    <div class="flex items-center text-white/80">
+                        <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                        </svg>
+                        <span class="text-sm font-medium">SSL Secured</span>
+                    </div>
+                </div>
+                <p class="text-blue-100 mt-2">Complete your booking for {{ event.title }}</p>
+            </div>
+
+            <div class="p-8">
+                <form method="POST" action="{% url 'checkout_success' event.id %}" class="space-y-8">
+                    {% csrf_token %}
+
+                    <!-- Customer Information -->
+                    <div class="bg-tapnex-gray rounded-2xl p-6">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <svg class="w-7 h-7 mr-3 text-tapnex-blue" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                            </svg>
+                            Customer Information
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-white rounded-xl p-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                                <div class="text-lg font-semibold text-gray-900">{{ user.get_full_name }}</div>
+                            </div>
+                            <div class="bg-white rounded-xl p-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                                <div class="text-lg font-semibold text-gray-900">{{ user.email }}</div>
+                            </div>
+                            <div class="bg-white rounded-xl p-4 md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Mobile Number</label>
+                                <div class="text-lg font-semibold text-gray-900">{{ user.mobile_number }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-white/20 p-6">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                            <svg class="w-7 h-7 mr-3 text-tapnex-blue" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                            </svg>
+                            Order Summary
+                        </h2>
+                        
+                        <div class="space-y-4 mb-6">
+                            {% for ticket_type in ticket_types %}
+                            {% if ticket_type.quantity > 0 %}
+                            <div class="bg-tapnex-gray rounded-xl p-4">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex-1">
+                                        <h3 class="font-bold text-lg text-gray-900">{{ ticket_type.type_name }}</h3>
+                                        
+                                        <!-- PROMINENT TOTAL ATTENDEES -->
+                                        <div class="mt-2 mb-2">
+                                            <p class="text-sm text-gray-600">Total Attendees</p>
+                                            <p class="text-3xl font-black text-tapnex-blue">{{ ticket_type.quantity|multiply:ticket_type.attendees_per_ticket|default:1 }}</p>
+                                            
+                                            <!-- SMALLER TICKET BREAKDOWN -->
+                                            <p class="text-sm text-gray-500 mt-1">
+                                                {{ ticket_type.quantity }} ticket{{ ticket_type.quantity|pluralize }} × {{ ticket_type.attendees_per_ticket|default:1 }} attendee{{ ticket_type.attendees_per_ticket|default:1|pluralize }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-2xl font-black text-tapnex-blue">₹{{ ticket_type.subtotal }}</div>
+                                        <div class="text-sm text-gray-500">₹{{ ticket_type.price }} each</div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <!-- Promo Code Section -->
+                        <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+                            <h3 class="text-lg font-bold text-yellow-800 mb-3 flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732L14.146 12.8l-1.179 4.456a1 1 0 01-1.856.048L9.75 13.8 6.5 12.134a1 1 0 010-1.732L9.75 8.2l1.361-3.504A1 1 0 0112 2z" clip-rule="evenodd"/>
+                                </svg>
+                                Promo Code
+                            </h3>
+                            <div class="flex gap-3">
+                                <input type="text" id="promo_code" placeholder="Enter promo code" value="{{ promo_code|default:'' }}"
+                                    class="flex-1 px-4 py-2 border border-yellow-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-tapnex-blue">
+                                <button type="button" id="validate_promo_btn"
+                                    class="bg-tapnex-blue text-white px-6 py-2 rounded-xl hover:bg-tapnex-dark transition-colors font-semibold">
+                                    Validate
+                                </button>
+                            </div>
+                            <div id="promo_validation_result" class="mt-2 text-sm"></div>
+                            {% if messages %}
+                                {% for message in messages %}
+                                    <p class="mt-2 text-sm {% if message.tags == 'error' %}text-red-600{% else %}text-green-600{% endif %}">
+                                        {{ message }}
+                                    </p>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+
+                        <!-- Pricing Breakdown -->
+                        <div class="bg-gradient-to-r from-tapnex-gray to-white rounded-xl p-6 space-y-3">
+                            <div class="flex justify-between text-gray-600 text-lg">
+                                <span>Subtotal</span>
+                                <span id="subtotal_display" class="font-semibold">₹{{ subtotal }}</span>
+                            </div>
+                            <div class="flex justify-between text-gray-600">
+                                <span>Total Attendees</span>
+                                <span class="font-medium">{{ total_attendees }}</span>
+                            </div>
+                            <div id="discount_row" class="flex justify-between text-green-600 font-semibold" {% if not discount %}style="display: none;"{% endif %}>
+                                <span class="flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5 2a1 1 0 011 1v1h1a1 1 0 010 2H6v1a1 1 0 01-2 0V6H3a1 1 0 010-2h1V3a1 1 0 011-1zm0 10a1 1 0 011 1v1h1a1 1 0 110 2H6v1a1 1 0 11-2 0v-1H3a1 1 0 110-2h1v-1a1 1 0 011-1zM12 2a1 1 0 01.967.744L14.146 7.2 17.5 9.134a1 1 0 010 1.732L14.146 12.8l-1.179 4.456a1 1 0 01-1.856.048L9.75 13.8 6.5 12.134a1 1 0 010-1.732L9.75 8.2l1.361-3.504A1 1 0 0112 2z" clip-rule="evenodd"/>
+                                    </svg>
+                                    Discount
+                                </span>
+                                <span id="discount_display">-₹{{ discount|default:'0.00' }}</span>
+                            </div>
+                            <div class="border-t border-gray-300 pt-3">
+                                <div class="flex justify-between text-xl font-black text-gray-900">
+                                    <span>Total Amount</span>
+                                    <span id="total_display" class="text-tapnex-blue">₹{{ total }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Complete Booking Button -->
+                        <div class="mt-8">
+                            <button type="submit" name="complete_booking" value="1" 
+                                class="w-full bg-gradient-to-r from-tapnex-blue to-tapnex-light text-white py-4 px-6 rounded-xl hover:from-tapnex-dark hover:to-tapnex-blue transition-all duration-300 font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center">
+                                <svg class="w-6 h-6 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                                </svg>
+                                Complete Secure Booking
+                            </button>
+                        </div>
+                        
+                        <!-- Security Notice -->
+                        <div class="mt-4 text-center">
+                            <div class="flex items-center justify-center text-sm text-gray-600">
+                                <svg class="w-4 h-4 mr-1 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                Your payment information is encrypted and secure
+                            </div>
+                        </div>
+                        
+                        <!-- Hidden inputs will be added by JavaScript when promo code is validated -->
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom TailwindCSS Configuration and Scripts -->
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'tapnex-blue': '#1e40af',
+                    'tapnex-light': '#3b82f6', 
+                    'tapnex-dark': '#1e3a8a',
+                    'tapnex-accent': '#06b6d4',
+                    'tapnex-gray': '#f8fafc'
+                },
+                animation: {
+                    'slide-up': 'slideUp 0.8s ease-out'
+                },
+                keyframes: {
+                    slideUp: {
+                        '0%': { opacity: '0', transform: 'translateY(30px)' },
+                        '100%': { opacity: '1', transform: 'translateY(0)' }
+                    }
+                }
+            }
+        }
+    }
+</script>
+                                    <span>₹{{ ticket_type.total }}</span>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+
+                                <div class="border-t pt-4">
+                                    <!-- Promo Code Section -->
+                                    <div class="mb-4">
+                                        <label for="promo_code" class="block text-sm font-medium text-gray-700 mb-2">Promo Code</label>
+                                        <div class="flex space-x-2">
+                                            <input type="text" name="promo_code" id="promo_code" 
+                                                   class="flex-grow px-3 py-2 border rounded-md" 
+                                                   placeholder="Enter promo code"
+                                                   value="{{ promo_code|default:'' }}">
+                                            <button type="button" id="validate_promo_btn"
+                                                    class="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700">
+                                                Validate
+                                            </button>
+                                        </div>
+                                        <div id="promo_validation_result" class="mt-2 text-sm"></div>
+                                        {% if messages %}
+                                            {% for message in messages %}
+                                                <p class="mt-2 text-sm {% if message.tags == 'error' %}text-red-600{% else %}text-green-600{% endif %}">
+                                                    {{ message }}
+                                                </p>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+
+                                    <!-- Order Summary -->
+                                    <div class="space-y-2">
+                                        <div class="flex justify-between text-gray-600">
+                                            <span>Subtotal</span>
+                                            <span id="subtotal_display">₹{{ subtotal }}</span>
+                                        </div>
+                                        <div class="flex justify-between text-gray-600">
+                                            <span>Total Attendees</span>
+                                            <span class="font-medium">{{ total_attendees }}</span>
+                                        </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const promoCodeInput = document.getElementById('promo_code');
+        const validatePromoBtn = document.getElementById('validate_promo_btn');
+        const promoValidationResult = document.getElementById('promo_validation_result');
+        const subtotalDisplay = document.getElementById('subtotal_display');
+        const discountRow = document.getElementById('discount_row');
+        const discountDisplay = document.getElementById('discount_display');
+        const totalDisplay = document.getElementById('total_display');
+        
+        // Get initial values from the template
+        let subtotal = parseFloat("{{ subtotal|default:0 }}");
+        let currentTotal = parseFloat("{{ total|default:subtotal }}");
+        let currentDiscount = parseFloat("{{ discount|default:0 }}");
+        
+        // If there's already a promo code value, show discount row
+        if (promoCodeInput.value.trim() !== '' && currentDiscount > 0) {
+            discountRow.style.display = '';
+            discountDisplay.textContent = `-₹${currentDiscount.toFixed(2)}`;
+        }
+        
+        validatePromoBtn.addEventListener('click', function() {
+            const promoCode = promoCodeInput.value.trim();
+            if (!promoCode) {
+                promoValidationResult.innerHTML = '<span class="text-red-600">Please enter a promo code</span>';
+                return;
+            }
+            
+            // Show loading state
+            validatePromoBtn.disabled = true;
+            validatePromoBtn.textContent = 'Validating...';
+            promoValidationResult.innerHTML = '<span class="text-blue-600">Validating promo code...</span>';
+            
+            // Make AJAX request to validate promo code
+            fetch(`/api/validate-promo/${encodeURIComponent(promoCode)}/?event_id={{ event.id }}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.valid) {
+                        // Update UI with discount information
+                        currentDiscount = data.discount;
+                        currentTotal = data.final_total;
+                        
+                        // Update display elements
+                        discountDisplay.textContent = `-₹${currentDiscount.toFixed(2)}`;
+                        discountRow.style.display = '';
+                        totalDisplay.textContent = `₹${currentTotal.toFixed(2)}`;
+                        
+                        promoValidationResult.innerHTML = `<span class="text-green-600">✓ Valid promo code! You save ₹${currentDiscount.toFixed(2)}</span>`;
+                        
+                        // Create hidden input to store promo code info for form submission
+                        let promoInput = document.querySelector('input[name="applied_promo_code"]');
+                        if (!promoInput) {
+                            promoInput = document.createElement('input');
+                            promoInput.type = 'hidden';
+                            promoInput.name = 'applied_promo_code';
+                            document.querySelector('form').appendChild(promoInput);
+                        }
+                        promoInput.value = promoCode;
+                        
+                        let discountInput = document.querySelector('input[name="applied_discount"]');
+                        if (!discountInput) {
+                            discountInput = document.createElement('input');
+                            discountInput.type = 'hidden';
+                            discountInput.name = 'applied_discount';
+                            document.querySelector('form').appendChild(discountInput);
+                        }
+                        discountInput.value = currentDiscount;
+                        
+                        let finalTotalInput = document.querySelector('input[name="final_total"]');
+                        if (!finalTotalInput) {
+                            finalTotalInput = document.createElement('input');
+                            finalTotalInput.type = 'hidden';
+                            finalTotalInput.name = 'final_total';
+                            document.querySelector('form').appendChild(finalTotalInput);
+                        }
+                        finalTotalInput.value = currentTotal;
+                    } else {
+                        // Reset to original values
+                        currentDiscount = 0;
+                        currentTotal = subtotal;
+                        
+                        // Update display elements
+                        discountRow.style.display = 'none';
+                        totalDisplay.textContent = `₹${subtotal.toFixed(2)}`;
+                        
+                        promoValidationResult.innerHTML = `<span class="text-red-600">✗ ${data.message}</span>`;
+                        
+                        // Remove promo code from form submission
+                        const promoInput = document.querySelector('input[name="applied_promo_code"]');
+                        if (promoInput) promoInput.value = '';
+                        
+                        const discountInput = document.querySelector('input[name="applied_discount"]');
+                        if (discountInput) discountInput.value = '0';
+                        
+                        const finalTotalInput = document.querySelector('input[name="final_total"]');
+                        if (finalTotalInput) finalTotalInput.value = subtotal;
+                    }
+                })
+                .catch(error => {
+                    promoValidationResult.innerHTML = '<span class="text-red-600">Error validating promo code. Please try again.</span>';
+                })
+                .finally(() => {
+                    // Reset button state
+                    validatePromoBtn.disabled = false;
+                    validatePromoBtn.textContent = 'Validate';
+                });
+        });
+        
+        // Trigger validation on Enter key in promo input field
+        promoCodeInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                validatePromoBtn.click();
+            }
+        });
+    });
+</script>
+{% endblock %}

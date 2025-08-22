@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Static Files Test - TapNex{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="bg-white rounded-lg shadow-xl p-8">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-gray-900 mb-4">🔧 Static Files Debug Test</h1>
+                <p class="text-gray-600">Testing static files loading in production</p>
+            </div>
+
+            <!-- Environment Info -->
+            <div class="bg-blue-50 rounded-lg p-6 mb-8">
+                <h2 class="text-xl font-semibold text-blue-900 mb-4">🌍 Environment Information</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <strong>DEBUG:</strong> {{ debug|yesno:"True,False" }}
+                    </div>
+                    <div>
+                        <strong>STATIC_URL:</strong> {% static '' %}
+                    </div>
+                    <div>
+                        <strong>Current Domain:</strong> {{ request.get_host }}
+                    </div>
+                    <div>
+                        <strong>Protocol:</strong> {{ request.scheme }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Tests -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <!-- TapNex Logo Test -->
+                <div class="bg-gray-50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">🖼️ TapNex Logo Test</h3>
+                    <div class="text-center">
+                        <img src="{% static 'core/images/TAPNEX_LOGO_BG.jpg' %}"
+                             alt="TapNex Logo" 
+                             class="mx-auto h-24 w-24 rounded-full object-cover shadow-lg border-2 border-blue-200"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                             onload="this.nextElementSibling.style.display='none';">
+                        <div class="hidden text-red-500 text-sm mt-2" id="tapnex-error">
+                            ❌ TapNex logo failed to load
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">Path: {% static 'core/images/TAPNEX_LOGO_BG.jpg' %}</p>
+                </div>
+
+                <!-- NexGen FC Logo Test -->
+                <div class="bg-gray-50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">🖼️ NexGen FC Logo Test</h3>
+                    <div class="text-center">
+                        <img src="{% static 'core/images/LOGO_NEXGEN_FC.png' %}"
+                             alt="NexGen FC Logo" 
+                             class="mx-auto h-24 w-24 rounded-full object-cover shadow-lg border-2 border-blue-200"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                             onload="this.nextElementSibling.style.display='none';">
+                        <div class="hidden text-red-500 text-sm mt-2" id="nexgen-error">
+                            ❌ NexGen FC logo failed to load
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-2">Path: {% static 'core/images/LOGO_NEXGEN_FC.png' %}</p>
+                </div>
+            </div>
+
+            <!-- Sound Tests -->
+            <div class="bg-gray-50 rounded-lg p-6 mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">🔊 Sound Files Test</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="font-medium text-gray-700 mb-2">Success Sound</h4>
+                        <audio id="success-sound" src="{% static 'sounds/SUCCESSFUL_SCAN.mp3' %}" controls class="w-full"></audio>
+                        <p class="text-sm text-gray-600 mt-1">Path: {% static 'sounds/SUCCESSFUL_SCAN.mp3' %}</p>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-700 mb-2">Failure Sound</h4>
+                        <audio id="failure-sound" src="{% static 'sounds/FAILED_NOT VALIDATED.wav' %}" controls class="w-full"></audio>
+                        <p class="text-sm text-gray-600 mt-1">Path: {% static 'sounds/FAILED_NOT VALIDATED.wav' %}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CSS Test -->
+            <div class="bg-gray-50 rounded-lg p-6 mb-8">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">🎨 CSS Files Test</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <h4 class="font-medium text-gray-700 mb-2">Core Styles</h4>
+                        <p class="text-sm text-gray-600">Path: {% static 'core/css/styles.css' %}</p>
+                        <div class="mt-2 p-3 bg-blue-100 text-blue-800 rounded">
+                            This should be styled if CSS loads correctly
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-medium text-gray-700 mb-2">Event Pass Styles</h4>
+                        <p class="text-sm text-gray-600">Path: {% static 'css/event_pass.css' %}</p>
+                        <div class="mt-2 p-3 bg-green-100 text-green-800 rounded">
+                            This should be styled if CSS loads correctly
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- File Structure Info -->
+            <div class="bg-yellow-50 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-yellow-900 mb-4">📁 File Status Check</h3>
+                <div class="space-y-2">
+                    {% for file_path, status in static_files_status.items %}
+                    <div class="flex items-center justify-between p-2 bg-white rounded border">
+                        <div class="flex items-center">
+                            {% if status.exists %}
+                                <span class="text-green-600 mr-2">✅</span>
+                            {% else %}
+                                <span class="text-red-600 mr-2">❌</span>
+                            {% endif %}
+                            <span class="text-sm font-mono">{{ file_path }}</span>
+                        </div>
+                        <div class="text-xs text-gray-600">
+                            {% if status.exists %}
+                                {{ status.size|filesizeformat }}
+                            {% else %}
+                                Missing
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="mt-4 p-3 bg-blue-50 rounded">
+                    <h4 class="font-medium text-blue-900 mb-2">📂 Static Files Configuration:</h4>
+                    <ul class="text-sm text-blue-800 space-y-1">
+                        <li>• STATIC_URL: {{ STATIC_URL }}</li>
+                        <li>• STATIC_ROOT: {{ STATIC_ROOT }}</li>
+                        <li>• DEBUG: {{ DEBUG|yesno:"True,False" }}</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Debug Actions -->
+            <div class="mt-8 text-center">
+                <button onclick="location.reload()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                    🔄 Refresh Page
+                </button>
+                <button onclick="testStaticFiles()" class="ml-4 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                    🧪 Test Static Files
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function testStaticFiles() {
+    const testFiles = [
+        '{% static "core/images/TAPNEX_LOGO_BG.jpg" %}',
+        '{% static "core/images/LOGO_NEXGEN_FC.png" %}',
+        '{% static "sounds/SUCCESSFUL_SCAN.mp3" %}',
+        '{% static "sounds/FAILED_NOT VALIDATED.wav" %}',
+        '{% static "core/css/styles.css" %}',
+        '{% static "css/event_pass.css" %}'
+    ];
+
+    console.log('🧪 Testing static files...');
+    testFiles.forEach(file => {
+        fetch(file)
+            .then(response => {
+                if (response.ok) {
+                    console.log(`✅ ${file} - OK (${response.status})`);
+                } else {
+                    console.log(`❌ ${file} - Failed (${response.status})`);
+                }
+            })
+            .catch(error => {
+                console.log(`❌ ${file} - Error: ${error.message}`);
+            });
+    });
+}
+
+// Auto-test on page load
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔧 Static files debug page loaded');
+    console.log('Current URL:', window.location.href);
+    console.log('Static URL base:', '{% static "" %}');
+});
+</script>
+{% endblock %}

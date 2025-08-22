@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Sponsor Button</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-8">
+    <h1 class="text-2xl font-bold mb-4">Test Sponsor Button Event Delegation</h1>
+    
+    <div id="sponsor-container">
+        <!-- Test Button 1 -->
+        <button type="button" class="test-sponsor-url bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium transition-colors mb-4" data-form-index="0">
+            Test URL - Static Button
+        </button>
+        <div class="sponsor-url-status-0 text-xs mt-2 mb-4"></div>
+        
+        <!-- Add Dynamic Button -->
+        <button id="add-button" class="bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 text-sm font-medium mb-4">
+            Add Dynamic Button
+        </button>
+    </div>
+    
+    <div id="log" class="mt-4 p-4 bg-gray-100 rounded">
+        <h3 class="font-bold">Event Log:</h3>
+        <div id="log-content"></div>
+    </div>
+
+    <script>
+        let buttonIndex = 1;
+        
+        function log(message) {
+            const logContent = document.getElementById('log-content');
+            logContent.innerHTML += '<div>' + new Date().toLocaleTimeString() + ': ' + message + '</div>';
+        }
+        
+        // Event delegation (similar to your implementation)
+        document.addEventListener('click', function(e) {
+            log('Click detected on: ' + e.target.className);
+            
+            // Check if clicked element or its parent is a test-sponsor-url button
+            let button = null;
+            if (e.target.classList.contains('test-sponsor-url')) {
+                button = e.target;
+            } else if (e.target.closest('.test-sponsor-url')) {
+                button = e.target.closest('.test-sponsor-url');
+            }
+            
+            if (button) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const formIndex = button.getAttribute('data-form-index');
+                log('SPONSOR TEST BUTTON CLICKED - Form index: ' + formIndex);
+                
+                // Show feedback
+                const statusElement = document.querySelector(`.sponsor-url-status-${formIndex}`);
+                if (statusElement) {
+                    statusElement.innerHTML = '<span class="text-green-600">✓ Button clicked successfully! Form index: ' + formIndex + '</span>';
+                }
+            }
+        });
+        
+        // Add dynamic button
+        document.getElementById('add-button').addEventListener('click', function() {
+            const container = document.getElementById('sponsor-container');
+            const newButton = document.createElement('button');
+            newButton.type = 'button';
+            newButton.className = 'test-sponsor-url bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 text-sm font-medium transition-colors mb-4';
+            newButton.setAttribute('data-form-index', buttonIndex);
+            newButton.textContent = 'Test URL - Dynamic Button ' + buttonIndex;
+            
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `sponsor-url-status-${buttonIndex} text-xs mt-2 mb-4`;
+            
+            container.appendChild(document.createElement('br'));
+            container.appendChild(newButton);
+            container.appendChild(statusDiv);
+            
+            log('Added dynamic button with index: ' + buttonIndex);
+            buttonIndex++;
+        });
+        
+        log('Event delegation initialized');
+    </script>
+</body>
+</html>

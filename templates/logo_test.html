@@ -1,0 +1,144 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Test - TapNex</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+        }
+        .logo-test {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .logo-test img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            margin: 10px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .success { background: rgba(34, 197, 94, 0.3); }
+        .error { background: rgba(239, 68, 68, 0.3); }
+        .info { background: rgba(59, 130, 246, 0.3); }
+        .url-display {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖼️ TapNex Logo Test Dashboard</h1>
+        
+        <div class="status info">
+            <strong>Environment:</strong> {{ settings.DEBUG|yesno:"Development,Production" }}<br>
+            <strong>Current Domain:</strong> {{ request.get_host }}<br>
+            <strong>Protocol:</strong> {{ request.scheme }}
+        </div>
+
+        <!-- TapNex Logo Test -->
+        <div class="logo-test">
+            <h2>TapNex Logo Test</h2>
+            <div class="url-display">
+                Static URL: {% static 'images/logos/TAPNEX_LOGO_BG.jpg' %}
+            </div>
+            <img src="{% static 'images/logos/TAPNEX_LOGO_BG.jpg' %}" 
+                 alt="TapNex Logo" 
+                 id="tapnex-logo"
+                 onload="showStatus('tapnex-status', 'success', '✅ TapNex logo loaded successfully!')"
+                 onerror="showStatus('tapnex-status', 'error', '❌ TapNex logo failed to load')">
+            <div id="tapnex-status" class="status info">Loading TapNex logo...</div>
+        </div>
+
+        <!-- NexGen FC Logo Test -->
+        <div class="logo-test">
+            <h2>NexGen FC Logo Test</h2>
+            <div class="url-display">
+                Static URL: {% static 'images/logos/LOGO_NEXGEN_FC.png' %}
+            </div>
+            <img src="{% static 'images/logos/LOGO_NEXGEN_FC.png' %}" 
+                 alt="NexGen FC Logo" 
+                 id="nexgen-logo"
+                 onload="showStatus('nexgen-status', 'success', '✅ NexGen FC logo loaded successfully!')"
+                 onerror="showStatus('nexgen-status', 'error', '❌ NexGen FC logo failed to load')">
+            <div id="nexgen-status" class="status info">Loading NexGen FC logo...</div>
+        </div>
+
+        <!-- Direct Link Tests -->
+        <div class="logo-test">
+            <h2>Direct URL Tests</h2>
+            <p>Click the links below to test if the files are accessible:</p>
+            <p>
+                <a href="{% static 'images/logos/TAPNEX_LOGO_BG.jpg' %}" target="_blank" style="color: white; text-decoration: underline;">
+                    🔗 Direct TapNex Logo Link
+                </a>
+            </p>
+            <p>
+                <a href="{% static 'images/logos/LOGO_NEXGEN_FC.png' %}" target="_blank" style="color: white; text-decoration: underline;">
+                    🔗 Direct NexGen FC Logo Link
+                </a>
+            </p>
+        </div>
+
+        <div class="status info">
+            <strong>Instructions:</strong><br>
+            1. If logos load successfully, the issue is elsewhere in your templates<br>
+            2. If logos fail to load, check Vercel static files deployment<br>
+            3. Click direct links to verify file accessibility<br>
+            4. Check browser console for error messages
+        </div>
+    </div>
+
+    <script>
+        function showStatus(elementId, type, message) {
+            const element = document.getElementById(elementId);
+            element.className = 'status ' + type;
+            element.textContent = message;
+        }
+
+        // Log static URL info for debugging
+        console.log('Static URL Base:', "{% static '' %}");
+        console.log('TapNex Logo URL:', "{% static 'images/logos/TAPNEX_LOGO_BG.jpg' %}");
+        console.log('NexGen Logo URL:', "{% static 'images/logos/LOGO_NEXGEN_FC.png' %}");
+        
+        // Test fetch for additional debugging
+        fetch("{% static 'images/logos/TAPNEX_LOGO_BG.jpg' %}")
+            .then(response => {
+                console.log('TapNex Logo Fetch Response:', response.status, response.ok);
+            })
+            .catch(error => {
+                console.error('TapNex Logo Fetch Error:', error);
+            });
+    </script>
+</body>
+</html>

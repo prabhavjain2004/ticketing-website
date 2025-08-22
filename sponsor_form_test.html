@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sponsor Form Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">Admin Sponsor Form Test</h1>
+        
+        <!-- Test Form 1: Existing Sponsor (like in Django formset) -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Sponsor 1 (Existing Form Structure)</h2>
+            
+            <div class="sponsor-form border-2 border-gray-200 p-6 rounded-lg bg-gray-50" data-form-index="0">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-semibold text-gray-800 text-lg flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                        </svg>
+                        Sponsor 1
+                    </h4>
+                    <button type="button" class="text-red-600 hover:text-red-800 remove-sponsor p-2 rounded-full hover:bg-red-50 transition-colors" data-form-index="0">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Sponsor Name <span class="text-red-500">*</span></label>
+                        <input type="text" name="sponsors-0-sponsor_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Enter sponsor name">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Display Order</label>
+                        <input type="number" name="sponsors-0-order" value="1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Logo URL (Google Drive) <span class="text-red-500">*</span></label>
+                    
+                    <div class="mb-3">
+                        <label class="block text-xs font-medium text-gray-600 mb-1">Paste iframe code or direct URL:</label>
+                        <textarea 
+                            id="sponsor-embed-input-0" 
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                            rows="3"
+                            placeholder="Paste your Google Drive iframe code or direct URL here..."
+                        ></textarea>
+                    </div>
+                    
+                    <input type="hidden" name="sponsors-0-logo_url" id="sponsor-logo-url-final-0" required>
+                    
+                    <button type="button" class="test-sponsor-url bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium transition-colors" data-form-index="0">
+                        Test URL
+                    </button>
+                    
+                    <div id="url-extraction-status-0" class="text-xs mt-2"></div>
+                    <div class="sponsor-url-status-0 text-xs mt-2"></div>
+                    
+                    <div class="sponsor-logo-preview-container-0 mt-3 hidden">
+                        <p class="text-sm font-medium text-gray-700 mb-2">Preview:</p>
+                        <img class="sponsor-logo-preview-0 h-16 rounded-lg border border-gray-200 shadow-sm" src="" alt="Logo preview">
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Website URL (Optional)</label>
+                    <input type="url" name="sponsors-0-website_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="https://sponsor-website.com (optional)">
+                </div>
+                
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Sponsor Type</label>
+                    <input type="text" name="sponsors-0-sponsor_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="e.g., Ticketing Partner, Gold Sponsor">
+                </div>
+                
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <button type="button" class="confirm-sponsor-btn bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center transition-colors shadow-sm" data-form-index="0">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                        Confirm Sponsor Details
+                    </button>
+                    <div class="sponsor-confirmation-status-0 text-xs mt-2"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Container for dynamic sponsors -->
+        <div id="sponsors-container">
+            <!-- Dynamic sponsors will be added here -->
+        </div>
+        
+        <!-- Add More Sponsors Button -->
+        <div class="mt-8 p-6 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg border-2 border-dashed border-blue-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-800 flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        Need to add more sponsors?
+                    </h4>
+                    <p class="text-sm text-gray-600 mt-1">Click the button below to add additional sponsors to your event.</p>
+                </div>
+                <button type="button" id="add-sponsor-btn" class="bg-gradient-to-r from-green-600 to-blue-600 text-white px-8 py-3 rounded-lg hover:from-green-700 hover:to-blue-700 flex items-center font-semibold shadow-lg transition-all duration-200">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    Add Another Sponsor
+                </button>
+            </div>
+        </div>
+        
+        <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <h3 class="font-semibold text-yellow-800 mb-2">Test Instructions:</h3>
+            <ol class="list-decimal list-inside text-sm text-yellow-700 space-y-1">
+                <li>Paste a Google Drive iframe code in the "Sponsor 1" form</li>
+                <li>Click "Test URL" to verify URL extraction and image loading</li>
+                <li>Click "Add Another Sponsor" to create a new sponsor form</li>
+                <li>Test the same functionality in the new dynamic form</li>
+                <li>Open browser console to check for any JavaScript errors</li>
+            </ol>
+        </div>
+        
+        <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <h3 class="font-semibold text-blue-800 mb-2">Sample Google Drive iframe to test:</h3>
+            <code class="text-sm bg-gray-100 p-2 rounded block">
+                &lt;iframe src="https://drive.google.com/file/d/1aBcDeFgHiJkLmNoPqRsTuVwXyZ123456/preview" width="640" height="480"&gt;&lt;/iframe&gt;
+            </code>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let sponsorFormCount = 1;
+        
+        // Core functions for URL extraction and validation
+        function extractUrlFromInput(input) {
+            if (!input) return null;
+            
+            // Check if it's an iframe
+            const iframeMatch = input.match(/<iframe[^>]*src="([^"]*)"[^>]*>/i);
+            if (iframeMatch) {
+                return iframeMatch[1];
+            }
+            
+            // Check if it's a direct URL
+            const urlPattern = /https?:\/\/[^\s<>"]+/i;
+            const urlMatch = input.match(urlPattern);
+            if (urlMatch) {
+                return urlMatch[0];
+            }
+            
+            return null;
+        }
+        
+        function validateGoogleDriveUrl(url) {
+            const googleDrivePatterns = [
+                /drive\.google\.com\/file\/d\/([a-zA-Z0-9-_]+)/,
+                /drive\.google\.com\/open\?id=([a-zA-Z0-9-_]+)/,
+                /googleusercontent\.com/
+            ];
+            
+            return googleDrivePatterns.some(pattern => pattern.test(url));
+        }
+        
+        function extractGoogleDriveId(url) {
+            const patterns = [
+                /\/d\/([a-zA-Z0-9-_]+)/,
+                /id=([a-zA-Z0-9-_]+)/,
+            ];
+            
+            for (const pattern of patterns) {
+                const match = url.match(pattern);
+                if (match) return match[1];
+            }
+            return null;
+        }
+        
+        function testGoogleDriveUrl(url, statusElement, previewElement, previewContainer) {
+            if (!url) {
+                statusElement.innerHTML = '<span class="text-red-600">❌ No URL provided</span>';
+                return;
+            }
+            
+            statusElement.innerHTML = '<span class="text-blue-600">🔄 Testing URL...</span>';
+            
+            const fileId = extractGoogleDriveId(url);
+            if (!fileId) {
+                statusElement.innerHTML = '<span class="text-red-600">❌ Invalid Google Drive URL format</span>';
+                return;
+            }
+            
+            const lh3Url = `https://lh3.googleusercontent.com/d/${fileId}`;
+            const thumbnailUrl = `https://drive.google.com/thumbnail?id=${fileId}`;
+            
+            const testImg = new Image();
+            testImg.onload = function() {
+                statusElement.innerHTML = '<span class="text-green-600">✅ Image accessible via LH3 URL</span>';
+                if (previewElement && previewContainer) {
+                    previewElement.src = lh3Url;
+                    previewContainer.classList.remove('hidden');
+                }
+            };
+            
+            testImg.onerror = function() {
+                const fallbackImg = new Image();
+                fallbackImg.onload = function() {
+                    statusElement.innerHTML = '<span class="text-green-600">✅ Image accessible via thumbnail URL</span>';
+                    if (previewElement && previewContainer) {
+                        previewElement.src = thumbnailUrl;
+                        previewContainer.classList.remove('hidden');
+                    }
+                };
+                fallbackImg.onerror = function() {
+                    statusElement.innerHTML = '<span class="text-red-600">❌ Image not publicly accessible. Please check sharing permissions.</span>';
+                    if (previewContainer) previewContainer.classList.add('hidden');
+                };
+                fallbackImg.src = thumbnailUrl;
+            };
+            
+            testImg.src = lh3Url;
+        }
+        
+        function processEmbedInput(index) {
+            const embedInput = document.getElementById(`sponsor-embed-input-${index}`);
+            const hiddenUrlInput = document.querySelector(`input[name="sponsors-${index}-logo_url"]`);
+            const statusElement = document.getElementById(`url-extraction-status-${index}`);
+            const testStatusElement = document.querySelector(`.sponsor-url-status-${index}`);
+            const previewElement = document.querySelector(`.sponsor-logo-preview-${index}`);
+            const previewContainer = document.querySelector(`.sponsor-logo-preview-container-${index}`);
+            
+            console.log(`Processing embed input for index ${index}:`, {
+                embedInput: !!embedInput,
+                hiddenUrlInput: !!hiddenUrlInput,
+                statusElement: !!statusElement,
+                testStatusElement: !!testStatusElement,
+                previewElement: !!previewElement,
+                previewContainer: !!previewContainer
+            });
+            
+            if (!embedInput || !hiddenUrlInput) {
+                console.log('Could not find required elements for index:', index);
+                return;
+            }
+            
+            const inputValue = embedInput.value.trim();
+            
+            if (!inputValue) {
+                hiddenUrlInput.value = '';
+                if (statusElement) statusElement.innerHTML = '';
+                if (testStatusElement) testStatusElement.innerHTML = '';
+                if (previewContainer) previewContainer.classList.add('hidden');
+                return;
+            }
+            
+            const extractedUrl = extractUrlFromInput(inputValue);
+            
+            if (extractedUrl) {
+                if (validateGoogleDriveUrl(extractedUrl)) {
+                    hiddenUrlInput.value = extractedUrl;
+                    if (statusElement) {
+                        statusElement.innerHTML = '<span class="text-green-600">✅ URL extracted successfully</span>';
+                    }
+                    
+                    // Automatically test the extracted URL
+                    if (testStatusElement && previewElement && previewContainer) {
+                        testGoogleDriveUrl(extractedUrl, testStatusElement, previewElement, previewContainer);
+                    }
+                } else {
+                    hiddenUrlInput.value = '';
+                    if (statusElement) {
+                        statusElement.innerHTML = '<span class="text-red-600">❌ Not a valid Google Drive URL</span>';
+                    }
+                    if (previewContainer) previewContainer.classList.add('hidden');
+                }
+            } else {
+                hiddenUrlInput.value = '';
+                if (statusElement) {
+                    statusElement.innerHTML = '<span class="text-red-600">❌ Could not extract URL from input</span>';
+                }
+                if (previewContainer) previewContainer.classList.add('hidden');
+            }
+        }
+        
+        function createSponsorForm(index) {
+            const div = document.createElement('div');
+            div.className = 'bg-white rounded-lg shadow-md p-6 mb-6';
+            
+            div.innerHTML = `
+                <h2 class="text-xl font-semibold mb-4">Sponsor ${parseInt(index) + 1} (Dynamic Form)</h2>
+                
+                <div class="sponsor-form border-2 border-gray-200 p-6 rounded-lg bg-gray-50 hover:border-gray-300 transition-colors" data-form-index="${index}">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="font-semibold text-gray-800 text-lg flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                            </svg>
+                            Sponsor ${parseInt(index) + 1}
+                        </h4>
+                        <button type="button" class="text-red-600 hover:text-red-800 remove-sponsor p-2 rounded-full hover:bg-red-50 transition-colors" data-form-index="${index}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Sponsor Name <span class="text-red-500">*</span></label>
+                            <input type="text" name="sponsors-${index}-sponsor_name" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="Enter sponsor name">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Display Order</label>
+                            <input type="number" name="sponsors-${index}-order" value="${parseInt(index) + 1}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Logo URL (Google Drive) <span class="text-red-500">*</span></label>
+                        
+                        <div class="mb-3">
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Paste iframe code or direct URL:</label>
+                            <textarea 
+                                id="sponsor-embed-input-${index}" 
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                                rows="3"
+                                placeholder="Paste your Google Drive iframe code or direct URL here..."
+                            ></textarea>
+                        </div>
+                        
+                        <input type="hidden" name="sponsors-${index}-logo_url" id="sponsor-logo-url-final-${index}" required>
+                        
+                        <button type="button" class="test-sponsor-url bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium transition-colors" data-form-index="${index}">
+                            Test URL
+                        </button>
+                        
+                        <div id="url-extraction-status-${index}" class="text-xs mt-2"></div>
+                        <div class="sponsor-url-status-${index} text-xs mt-2"></div>
+                        
+                        <div class="sponsor-logo-preview-container-${index} mt-3 hidden">
+                            <p class="text-sm font-medium text-gray-700 mb-2">Preview:</p>
+                            <img class="sponsor-logo-preview-${index} h-16 rounded-lg border border-gray-200 shadow-sm" src="" alt="Logo preview">
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Website URL (Optional)</label>
+                        <input type="url" name="sponsors-${index}-website_url" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="https://sponsor-website.com (optional)">
+                    </div>
+                    
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Sponsor Type</label>
+                        <input type="text" name="sponsors-${index}-sponsor_type" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" placeholder="e.g., Ticketing Partner, Gold Sponsor">
+                    </div>
+                    
+                    <div class="mt-6 pt-4 border-t border-gray-200">
+                        <button type="button" class="confirm-sponsor-btn bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center transition-colors shadow-sm" data-form-index="${index}">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Confirm Sponsor Details
+                        </button>
+                        <div class="sponsor-confirmation-status-${index} text-xs mt-2"></div>
+                    </div>
+                </div>
+            `;
+            
+            return div;
+        }
+        
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded, initializing sponsor form functionality...');
+            
+            // Add sponsor button
+            const addSponsorBtn = document.getElementById('add-sponsor-btn');
+            if (addSponsorBtn) {
+                addSponsorBtn.addEventListener('click', function() {
+                    console.log('Adding new sponsor form with index:', sponsorFormCount);
+                    const container = document.getElementById('sponsors-container');
+                    const newSponsorForm = createSponsorForm(sponsorFormCount);
+                    container.appendChild(newSponsorForm);
+                    
+                    // Initialize iframe processing for the new form
+                    setTimeout(() => {
+                        processEmbedInput(sponsorFormCount);
+                    }, 100);
+                    
+                    sponsorFormCount++;
+                    
+                    // Scroll to new form
+                    newSponsorForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
+            }
+            
+            // Test URL buttons
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('test-sponsor-url')) {
+                    e.preventDefault();
+                    const formIndex = e.target.dataset.formIndex;
+                    console.log('Testing URL for form index:', formIndex);
+                    
+                    const hiddenUrlInput = document.querySelector(`input[name="sponsors-${formIndex}-logo_url"]`);
+                    const statusElement = document.querySelector(`.sponsor-url-status-${formIndex}`);
+                    const previewElement = document.querySelector(`.sponsor-logo-preview-${formIndex}`);
+                    const previewContainer = document.querySelector(`.sponsor-logo-preview-container-${formIndex}`);
+                    
+                    if (hiddenUrlInput && statusElement) {
+                        const url = hiddenUrlInput.value;
+                        if (!url) {
+                            statusElement.innerHTML = '<span class="text-red-600">❌ No URL found. Please paste iframe code or URL first.</span>';
+                            return;
+                        }
+                        testGoogleDriveUrl(url, statusElement, previewElement, previewContainer);
+                    } else {
+                        console.log('Could not find elements for form index:', formIndex);
+                    }
+                }
+            });
+            
+            // Iframe processing
+            document.addEventListener('input', function(e) {
+                if (e.target.id && e.target.id.startsWith('sponsor-embed-input-')) {
+                    const index = e.target.id.replace('sponsor-embed-input-', '');
+                    console.log('Input event for index:', index);
+                    processEmbedInput(index);
+                }
+            });
+            
+            document.addEventListener('paste', function(e) {
+                if (e.target.id && e.target.id.startsWith('sponsor-embed-input-')) {
+                    const index = e.target.id.replace('sponsor-embed-input-', '');
+                    console.log('Paste event for index:', index);
+                    setTimeout(() => processEmbedInput(index), 100);
+                }
+            });
+            
+            // Confirm sponsor buttons
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.confirm-sponsor-btn')) {
+                    e.preventDefault();
+                    const formIndex = e.target.closest('.confirm-sponsor-btn').dataset.formIndex;
+                    console.log('Confirming sponsor for form index:', formIndex);
+                    
+                    const sponsorForm = document.querySelector(`.sponsor-form[data-form-index="${formIndex}"]`);
+                    const statusElement = document.querySelector(`.sponsor-confirmation-status-${formIndex}`);
+                    
+                    const sponsorName = sponsorForm.querySelector('input[name$="-sponsor_name"]');
+                    const logoUrl = sponsorForm.querySelector('input[name$="-logo_url"]');
+                    
+                    let isValid = true;
+                    let errors = [];
+                    
+                    if (!sponsorName.value.trim()) {
+                        errors.push('Sponsor name is required');
+                        isValid = false;
+                    }
+                    
+                    if (!logoUrl.value.trim()) {
+                        errors.push('Logo URL is required');
+                        isValid = false;
+                    }
+                    
+                    if (isValid) {
+                        statusElement.innerHTML = '<span class="text-green-600 flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Sponsor details confirmed!</span>';
+                        sponsorForm.classList.add('border-green-500', 'bg-green-50');
+                        
+                        const confirmBtn = e.target.closest('.confirm-sponsor-btn');
+                        confirmBtn.innerHTML = `
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Confirmed ✓
+                        `;
+                        confirmBtn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                        confirmBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                        confirmBtn.disabled = true;
+                    } else {
+                        statusElement.innerHTML = '<span class="text-red-600">Please fix the following errors: ' + errors.join(', ') + '</span>';
+                    }
+                }
+            });
+            
+            // Initialize existing form (form index 0)
+            setTimeout(() => {
+                processEmbedInput(0);
+            }, 100);
+            
+            console.log('Sponsor form functionality initialized successfully!');
+        });
+    </script>
+</body>
+</html>

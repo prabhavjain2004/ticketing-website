@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Your Event Pass - TapNex</title>
+    <style>
+        .btn {
+            background: #1e40af;
+            color: #fff;
+            padding: 14px 32px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin: 24px 0;
+            box-shadow: 0 4px 12px rgba(30,64,175,0.3);
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background: #06b6d4;
+            transform: translateY(-2px);
+        }
+        .container {
+            max-width: 520px;
+            margin: 0 auto;
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 32px;
+            font-family: 'Inter', Arial, sans-serif;
+            color: #22223b;
+            box-shadow: 0 4px 24px rgba(30,64,175,0.08);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        .logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #1e40af;
+            margin-bottom: 12px;
+        }
+        .logo-fallback {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1e40af, #06b6d4);
+            color: white;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            border: 3px solid #1e40af;
+            margin: 0 auto 12px;
+        }
+        .footer {
+            color: #6b7280;
+            font-size: 13px;
+            margin-top: 32px;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .nexgen-logo {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <!-- TapNex Logo -->
+            <img src="https://drive.google.com/thumbnail?id=1nu-W80HaCOhyw_UcEP_I55tTJuv2gNic&sz=w200" 
+                 alt="TapNex Logo" 
+                 class="logo" 
+                 onerror="this.src='https://lh3.googleusercontent.com/d/1nu-W80HaCOhyw_UcEP_I55tTJuv2gNic'; this.onerror=null;">
+            <h1 style="color: #1e40af; font-size: 24px; margin: 0;">TapNex</h1>
+            <p style="color: #6b7280; margin: 4px 0 0 0; font-size: 14px;">Ticketing System</p>
+        </div>
+        
+        <h2 style="margin-bottom: 8px; color: #1e40af;">Thank you for your purchase!</h2>
+        <p style="margin-bottom: 24px; line-height: 1.6;">
+            Your event pass for <strong>{{ event_name }}</strong> is ready.
+        </p>
+        <a href="{{ pass_url }}" class="btn" target="_blank">🎫 View Your Pass</a>
+        <p style="margin-top: 24px; line-height: 1.8; background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #1e40af;">
+            <strong style="color: #1e40af;">Event:</strong> {{ event_name }}<br>
+            <strong style="color: #1e40af;">Date & Time:</strong> {{ event_datetime }}<br>
+            <strong style="color: #1e40af;">Pass Type:</strong> {{ pass_type }}<br>
+            <strong style="color: #1e40af;">Admit:</strong> {{ admit_count }}<br>
+            <strong style="color: #1e40af;">Ticket ID:</strong> {{ ticket_id }}
+        </p>
+        </p>
+        <div class="footer">
+            <p style="margin: 0 0 8px 0; font-weight: 600; color: #1e40af;">TapNex &mdash; Seamless Event Experience</p>
+            <p style="margin: 0 0 16px 0;">Need help? Contact <a href="mailto:info@tapnex.tech" style="color: #06b6d4;">info@tapnex.tech</a></p>
+            <div class="brand">
+                <span style="color: #9ca3af; font-size: 12px;">A premium brand by</span>
+                <strong style="color: #374151;">NexGen FC</strong>
+                <img src="https://drive.google.com/thumbnail?id=1giAtj3jwPxY7z-MI9vpc1Ep7RsJaLeeb&sz=w200" 
+                     alt="NexGen FC" 
+                     class="nexgen-logo"
+                     onerror="this.src='https://lh3.googleusercontent.com/d/1giAtj3jwPxY7z-MI9vpc1Ep7RsJaLeeb'; this.onerror=null;">
+            </div>
+            <p style="margin: 12px 0 0 0; color: #9ca3af; font-size: 11px;">&copy; 2025 TapNex. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>

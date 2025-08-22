@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* Main container for the scanner */
+    .scanner-container {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 10px;
+        background-color: #2c2c2c;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        position: relative;
+        overflow: hidden; /* Ensures the overlay fits perfectly */
+    }
+
+    /* The video element where the camera feed appears */
+    #qr-video-container {
+        position: relative;
+        border-radius: 8px;
+        overflow: hidden;
+        /* This creates the black bars effect for a square viewfinder */
+        background: #000; 
+    }
+    
+    #qr-video {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    /* Message shown while the camera is starting up */
+    #loading-message {
+        color: white;
+        text-align: center;
+        padding: 40px 20px;
+        font-size: 1.2rem;
+    }
+    
+    /* The feedback overlay (tick or cross) */
+    .scanner-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+        transition: opacity 0.3s ease-in-out;
+        opacity: 0;
+        pointer-events: none;
+    }
+    
+    .scanner-overlay.visible {
+        opacity: 1;
+    }
+    
+    .scanner-overlay-icon {
+        font-size: 8rem;
+        color: white;
+        text-shadow: 0 0 20px rgba(0,0,0,0.7);
+    }
+    
+    .scanner-overlay.success {
+        background-color: rgba(40, 167, 69, 0.8); /* Darker green */
+    }
+
+    .scanner-overlay.error {
+        background-color: rgba(220, 53, 69, 0.8); /* Darker red */
+    }
+
+    /* The message text below the feedback icon */
+    .scanner-overlay-message {
+        font-size: 1.5rem;
+        color: white;
+        text-align: center;
+        margin-top: 20px;
+        padding: 0 15px;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
+        line-height: 1.4;
+    }
+    
+    .scanner-overlay-message small {
+        font-size: 0.9rem;
+        font-weight: normal;
+        opacity: 0.9;
+        display: block;
+        margin-top: 5px;
+    }
+</style>
+
+<div class="container text-center">
+    <h1 class="my-4">Ticket Scanner</h1>
+    <div class="scanner-container">
+        <div id="qr-reader"></div>
+        <div id="result-overlay" class="scanner-overlay">
+            <div id="result-icon" class="scanner-overlay-icon"></div>
+            <div id="result-message" class="scanner-overlay-message"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Pre-load sounds
+        const successSound = new Audio("{% static 'sounds/SUCCESSFUL_SCAN.mp3' %}");
+        const errorSound = new Audio("{% static 'sounds/FAILED_NOT VALIDATED.wav' %}");
+        
+        // Get references to HTML elements
+        const resultOverlay = document.getElementById('result-overlay');
+        const resultIcon = document.getElementById('result-icon');
+        const resultMessage = document.getElementById('result-message');
+        
+        let isScanningPaused = false;
+
+        // This function is called when a QR code is successfully decoded
+        function onScanSuccess(decodedText, decodedResult) {
+            if (isScanningPaused) return;
+
+            isScanningPaused = true; // Prevent multiple scans of the same code
+            
+            console.log("QR Code content:", decodedText); // Debug log
+            
+            let ticketData;
+            
+            try {
+                // Try to parse as JSON first (for format: {"tid": 131, "tok": "uuid", "ts": timestamp, "sig": "signature"})
+                ticketData = JSON.parse(decodedText);
+                console.log("Parsed JSON:", ticketData); // Debug log
+                
+                if (!ticketData.tid || !ticketData.tok) {
+                    console.log("Missing required fields in JSON:", ticketData); // Debug log
+                    throw new Error('Missing required fields (tid, tok) in QR code data');
+                }
+                
+                console.log("Valid QR JSON data found"); // Debug log
+            } catch (e) {
+                console.log("JSON parse failed:", e.message); // Debug log
+                console.log("Trying UUID regex fallback..."); // Debug log
+                
+                // Fallback to UUID regex for other formats (URLs, plain UUIDs, etc.)
+                const uuidMatch = decodedText.match(/([a-fA-F0-9\-]{36})/);
+                if (uuidMatch && uuidMatch[1]) {
+                    const ticketUUID = uuidMatch[1];
+                    console.log("Found UUID via regex:", ticketUUID); // Debug log
+                    
+                    // Create a simple data structure for non-JSON QR codes
+                    ticketData = {
+                        ticket_uuid: ticketUUID  // For backward compatibility
+                    };
+                } else {
+                    console.log("No UUID found in text:", decodedText); // Debug log
+                    showResult(false, 'Invalid QR Code Format');
+                    setTimeout(() => {
+                        isScanningPaused = false; // Resume scanning after error
+                    }, 2000);
+                    return;
+                }
+            }
+            
+            console.log("Final data to validate:", ticketData); // Debug log
+            validateTicketOnServer(ticketData);
+        }
+        
+        function onScanFailure(error) {
+            // This function is called when no QR code is found. We can ignore it for a cleaner UI.
+            // console.warn(`Code scan error = ${error}`);
+        }
+
+        // This function sends the scanned data to your Django backend
+        function validateTicketOnServer(ticketData) {
+            console.log("Sending ticket data to server:", ticketData); // Debug log
+            
+            fetch("{% url 'api_validate_ticket' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(ticketData)
+            })
+            .then(response => {
+                console.log("Server response status:", response.status); // Debug log
+                return response.json();
+            })
+            .then(data => {
+                console.log("Server response data:", JSON.stringify(data, null, 2)); // Better debug log
+                console.log("Response success:", data.success);
+                console.log("Response message:", data.message);
+                
+                // Log additional ticket details if available
+                if (data.ticket_number) {
+                    console.log("Ticket number:", data.ticket_number);
+                }
+                if (data.event_name) {
+                    console.log("Event name:", data.event_name);
+                }
+                if (data.ticket_type_name) {
+                    console.log("Ticket type:", data.ticket_type_name);
+                }
+                if (data.error_code) {
+                    console.log("Error code:", data.error_code);
+                }
+                if (data.validation_time) {
+                    console.log("Validation time:", data.validation_time);
+                }
+                
+                // Play appropriate sound and show result
+                showResult(data.success === true, data.message, data);
+            })
+            .catch(err => {
+                console.error("Network error:", err); // Debug log
+                showResult(false, 'Network Error: ' + err.message, null);
+            });
+        }
+
+        // This function displays the visual and audio feedback
+        function showResult(isSuccess, message, additionalData = null) {
+            resultOverlay.className = isSuccess ? 'scanner-overlay success visible' : 'scanner-overlay error visible';
+            resultIcon.innerHTML = isSuccess ? '&#10004;' : '&#10006;'; // Check or Cross icon
+            
+            // Create enhanced message with additional details
+            let displayMessage = message;
+            if (isSuccess && additionalData) {
+                if (additionalData.ticket_number) {
+                    displayMessage += `<br><small>Ticket: ${additionalData.ticket_number}</small>`;
+                }
+                if (additionalData.event_name) {
+                    displayMessage += `<br><small>Event: ${additionalData.event_name}</small>`;
+                }
+                if (additionalData.ticket_type_name) {
+                    displayMessage += `<br><small>Type: ${additionalData.ticket_type_name}</small>`;
+                }
+                if (additionalData.validation_time) {
+                    displayMessage += `<br><small>Time: ${additionalData.validation_time}</small>`;
+                }
+            } else if (!isSuccess && additionalData) {
+                // For error cases, show additional error details
+                if (additionalData.ticket_number) {
+                    displayMessage += `<br><small>Ticket: ${additionalData.ticket_number}</small>`;
+                }
+                if (additionalData.used_at) {
+                    displayMessage += `<br><small>Used: ${additionalData.used_at}</small>`;
+                }
+                if (additionalData.validated_by) {
+                    displayMessage += `<br><small>By: ${additionalData.validated_by}</small>`;
+                }
+            }
+            
+            resultMessage.innerHTML = displayMessage;
+
+            if (isSuccess) {
+                successSound.play();
+            } else {
+                errorSound.play();
+            }
+
+            // Hide the result overlay after 3 seconds and allow scanning again
+            setTimeout(() => {
+                resultOverlay.classList.remove('visible');
+                isScanningPaused = false;
+            }, 3000);
+        }
+
+        // --- Main function to create and start the camera scanner ---
+        // This uses the more advanced Html5Qrcode class for direct camera control
+        const html5QrCode = new Html5Qrcode("qr-reader");
+        const qrCodeSuccessCallback = onScanSuccess;
+        const config = { 
+            fps: 10, 
+            qrbox: { width: 250, height: 250 },
+            // Important: This helps in showing a stream-like experience
+            rememberLastUsedCamera: true 
+        };
+
+        // Start the scanner with the back camera
+        html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback, onScanFailure)
+            .catch(err => {
+                console.error(`Unable to start scanning, error: ${err}`);
+                const readerElement = document.getElementById('qr-reader');
+                readerElement.innerHTML = `<p class="text-danger">Error: Could not access camera. Please grant permission and refresh.</p>`;
+            });
+    });
+</script>
+{% endblock %}
