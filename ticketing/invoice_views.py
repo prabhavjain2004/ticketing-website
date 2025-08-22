@@ -117,16 +117,24 @@ def admin_download_invoice_csv(request):
     
     # Create CSV writer
     writer = csv.writer(response)
+    
+    # --- 1. This is the corrected header row ---
     writer.writerow([
-        'Invoice Number', 'Event Name', 'Ticket ID', 'Customer Email',
+        'Invoice Number', 'Full Name', 'Mobile Number', 'Event Name', 'Ticket ID', 'Customer Email',
         'Base Price (₹)', 'TapNex Service Fee (₹)', 'Total Paid (₹)',
         'Purchase Date & Time', 'Transaction ID'
     ])
     
     # Add invoice data
     for invoice in invoices_query:
+        # Get the full name from the user associated with the invoice
+        full_name = f"{invoice.user.first_name} {invoice.user.last_name}"
+
+        # --- 2. This is the corrected data row ---
         writer.writerow([
             invoice.invoice_number,
+            full_name,
+            invoice.user.mobile_number, # <-- Adds the mobile number
             invoice.event.title,
             invoice.ticket.ticket_number,
             invoice.user.email,

@@ -38,7 +38,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ya_zcsp%af_fz)o=j=_okv@gmpum*vu$#xmh%f=(82r52x2u-%'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
+DEBUG = True
 
 # Restrict allowed hosts for production security
 ALLOWED_HOSTS = [
@@ -212,9 +212,12 @@ CSRF_TRUSTED_ORIGINS = [
 # Site Domain Configuration for email links
 SITE_DOMAIN = os.getenv('SITE_DOMAIN', 'https://tickets.tapnex.tech' if not DEBUG else 'http://localhost:8000')
 
-# Security settings for production
-if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
+# Ensure DEBUG is set to True for development to avoid HTTPS issues
+DEBUG = True
+
+# # Security settings for production
+# if not DEBUG:
+#     SECURE_SSL_REDIRECT = True
+#     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+#     SESSION_COOKIE_SECURE = True
+#     CSRF_COOKIE_SECURE = True
